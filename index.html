@@ -9,7 +9,7 @@
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
 
 :root{
-  --paper:#5b5eaf;
+  --bg-main:#5b5eaf;
   --panel:#C0C0C0;
   --panel-alt:#D4D0C8;
   --panel-selected:#B9D6F2;
@@ -27,17 +27,48 @@
   --rust-soft:#F0CACA;
 
   --line:#808080;
+  --border-light:#FFFFFF;
+  --border-dark:#404040;
+  --input-bg:#FFFFFF;
+
+  --saved-party-bg:#D1C2D9;
+  --saved-party-hover:#C3B1CE;
 
   --font-display:"Tahoma","MS Sans Serif",Verdana,sans-serif;
   --font-body:"Tahoma","MS Sans Serif",Verdana,sans-serif;
   --font-mono:"Courier New",monospace;
 }
+
+[data-theme="dark"] {
+  --bg-main:#451120;
+  --panel:#16202b;
+  --panel-alt:#16202b;
+  --panel-selected:#1b2d42;
+
+  --ink:#FFFFFF;
+  --ink-soft:#D4D0C8;
+
+  --green:#00FF00;
+  --green-soft:#1a3a1a;
+
+  --rust:#FF6B6B;
+  --rust-soft:#4a1818;
+
+  --line:#404040;
+  --border-light:#404040;
+  --border-dark:#000000;
+  --input-bg:#10171e;
+
+  --saved-party-bg:#3d2c42;
+  --saved-party-hover:#4f3a56;
+}
+
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
     margin:0;
-    background:#5b5eaf;
-    color:#000;
+    background:var(--bg-main);
+    color:var(--ink);
     font-family:Tahoma,"MS Sans Serif",Verdana,sans-serif;
     font-size:11px;
 }
@@ -45,11 +76,11 @@
     width:1180px;
     margin:16px auto;
     padding:8px;
-    background:#C0C0C0;
-    border-top:2px solid #FFFFFF;
-    border-left:2px solid #FFFFFF;
-    border-right:2px solid #404040;
-    border-bottom:2px solid #404040;
+    background:var(--panel);
+    border-top:2px solid var(--border-light);
+    border-left:2px solid var(--border-light);
+    border-right:2px solid var(--border-dark);
+    border-bottom:2px solid var(--border-dark);
 }
 
   /* ---------- masthead ---------- */
@@ -69,12 +100,18 @@
 .masthead-content{
     flex: 1;
 }
-.eu-stars-container{
+.masthead-right{
     flex-shrink: 0;
     margin-left: 16px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 12px;
+}
+[data-theme="dark"] .masthead {
+  border-top-color: var(--border-light);
+  border-left-color: var(--border-light);
+  border-right-color: var(--border-dark);
+  border-bottom-color: var(--border-dark);
 }
 .eyebrow{
     display:none;
@@ -95,12 +132,31 @@ h1{
     font-size:18px;
     font-weight:bold;
     margin:2px 0;
+    color:#ffffff;
 }
-  .eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;color:var(--gold);
-    text-transform:uppercase;font-weight:600;margin:0 0 10px;}
-  h1{font-family:var(--font-display);font-size:clamp(30px,4vw,44px);font-weight:700;margin:0 0 12px;line-height:1.05;}
-  .subtitle{font-family:var(--font-display);max-width:640px;color:#ffffff;font-size:15.5px;line-height:1.55;margin:0;}
-  .session-note{font-family:var(--font-display);font-size:11.5px;color:#ffffff;margin-top:14px;}
+
+  /* Theme Toggle Button */
+  .theme-toggle-btn {
+    background: #C0C0C0;
+    color: #000;
+    border-top: 2px solid #FFFFFF;
+    border-left: 2px solid #FFFFFF;
+    border-right: 2px solid #404040;
+    border-bottom: 2px solid #404040;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: Tahoma, sans-serif;
+  }
+  .theme-toggle-btn:active {
+    border-top: 2px solid #404040;
+    border-left: 2px solid #404040;
+    border-right: 2px solid #FFFFFF;
+    border-bottom: 2px solid #FFFFFF;
+  }
 
   /* ---------- layout ---------- */
   .workbench{display:grid;grid-template-columns:1fr 380px;gap:28px;align-items:start;}
@@ -109,12 +165,12 @@ h1{
     .assembly-panel{position:static !important;}
   }
   .panel{
-    background:#C0C0C0;
+    background:var(--panel);
 
-    border-top:2px solid #FFFFFF;
-    border-left:2px solid #FFFFFF;
-    border-right:2px solid #404040;
-    border-bottom:2px solid #404040;
+    border-top:2px solid var(--border-light);
+    border-left:2px solid var(--border-light);
+    border-right:2px solid var(--border-dark);
+    border-bottom:2px solid var(--border-dark);
 
     border-radius:0;
 
@@ -143,13 +199,13 @@ h1{
 
     padding:4px 12px;
 
-    color:#000;
-    background:#C0C0C0;
+    color:var(--ink);
+    background:var(--panel);
 
-    border-top:2px solid #FFFFFF;
-    border-left:2px solid #FFFFFF;
-    border-right:2px solid #404040;
-    border-bottom:2px solid #404040;
+    border-top:2px solid var(--border-light);
+    border-left:2px solid var(--border-light);
+    border-right:2px solid var(--border-dark);
+    border-bottom:2px solid var(--border-dark);
 
     border-radius:0;
 
@@ -159,41 +215,33 @@ h1{
 }
 
 .btn:hover{
-    background:#D4D0C8;
+    opacity: 0.85;
 }
 
 .btn:active,
 .btn.active{
-    border-top:2px solid #404040;
-    border-left:2px solid #404040;
-    border-right:2px solid #FFFFFF;
-    border-bottom:2px solid #FFFFFF;
-    background:#D4D0C8;
+    border-top:2px solid var(--border-dark);
+    border-left:2px solid var(--border-dark);
+    border-right:2px solid var(--border-light);
+    border-bottom:2px solid var(--border-light);
     font-weight:bold;
 }
 
 .btn:focus{
-    outline:1px dotted #000;
+    outline:1px dotted var(--ink);
     outline-offset:-4px;
 }
 
 .btn-primary,
 .btn-outline,
 .btn-ghost{
-    background:#C0C0C0;
-    color:#000;
-}
-
-.btn-primary:hover,
-.btn-outline:hover,
-.btn-ghost:hover{
-    background:#D4D0C8;
-    color:#000;
+    background:var(--panel);
+    color:var(--ink);
 }
 
 .btn:disabled{
-    color:#808080;
-    background:#C0C0C0;
+    color:var(--line);
+    background:var(--panel);
 }
 
 .btn-small{
@@ -203,7 +251,7 @@ h1{
 
   /* ---------- import ---------- */
   .import-help{font-family:var(--font-mono);font-size:11px;color:var(--ink-soft);margin:0 0 12px;line-height:1.6;}
-  .import-help code{background:var(--panel-alt);padding:1px 5px;border-radius:3px;}
+  .import-help code{background:var(--panel-alt);padding:1px 5px;border-radius:3px;color:var(--ink);}
   .import-summary{font-family:var(--font-mono);font-size:11.5px;margin:0 0 12px;}
   .import-summary:empty{display:none;}
   .import-summary.ok{color:var(--green);}
@@ -230,15 +278,15 @@ select{
     font-family:Tahoma,"MS Sans Serif",Verdana,sans-serif;
     font-size:11px;
 
-    background:#FFFFFF;
-    color:#000;
+    background:var(--input-bg);
+    color:var(--ink);
 
     padding:3px 4px;
 
-    border-top:2px solid #404040;
-    border-left:2px solid #404040;
-    border-right:2px solid #FFFFFF;
-    border-bottom:2px solid #FFFFFF;
+    border-top:2px solid var(--border-dark);
+    border-left:2px solid var(--border-dark);
+    border-right:2px solid var(--border-light);
+    border-bottom:2px solid var(--border-light);
 
     border-radius:0;
 
@@ -246,7 +294,7 @@ select{
 }
   input:focus,
 select:focus{
-    outline:1px dotted #000;
+    outline:1px dotted var(--ink);
     outline-offset:-2px;
 }
   .colour-row{display:flex;align-items:center;gap:8px;}
@@ -258,14 +306,14 @@ select:focus{
   /* ---------- empty state ---------- */
   .empty-state{
     font-size:11px;
-    color:#000;
+    color:var(--ink);
     padding:12px;
     text-align:center;
-    background:#FFFFFF;
-    border-top:2px solid #404040;
-    border-left:2px solid #404040;
-    border-right:2px solid #FFFFFF;
-    border-bottom:2px solid #FFFFFF;
+    background:var(--input-bg);
+    border-top:2px solid var(--border-dark);
+    border-left:2px solid var(--border-dark);
+    border-right:2px solid var(--border-light);
+    border-bottom:2px solid var(--border-light);
     border-radius:0;
   }
 
@@ -274,12 +322,13 @@ select:focus{
   .search-wrap{position:relative;flex:1 1 200px;}
   .search-input{
 
-    background:#FFF;
+    background:var(--input-bg);
+    color:var(--ink);
 
-    border-top:2px solid #404040;
-    border-left:2px solid #404040;
-    border-right:2px solid #FFFFFF;
-    border-bottom:2px solid #FFFFFF;
+    border-top:2px solid var(--border-dark);
+    border-left:2px solid var(--border-dark);
+    border-right:2px solid var(--border-light);
+    border-bottom:2px solid var(--border-light);
 
     border-radius:0;
 
@@ -288,6 +337,10 @@ select:focus{
     font-family:Tahoma;
     font-size:11px;
 }
+  .search-clear{
+    position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; color: var(--ink); cursor: pointer;
+  }
   .search-clear:hover{color:var(--rust);}
   .sort-wrap, .view-wrap{display:flex;align-items:center;gap:6px;flex-shrink:0;}
   .sort-label{font-family:var(--font-mono);font-size:11px;color:var(--ink-soft);
@@ -339,7 +392,7 @@ select:focus{
     flex-direction: row;
     gap: 6px;
     font-size: 10px;
-    color: #404040;
+    color: var(--ink-soft);
     white-space: nowrap;
     flex-shrink: 0;
   }
@@ -370,12 +423,12 @@ select:focus{
     flex-direction:column;
     align-items:center;
 
-    background:#C0C0C0;
+    background:var(--panel);
 
-    border-top:2px solid #FFFFFF;
-    border-left:2px solid #FFFFFF;
-    border-right:2px solid #404040;
-    border-bottom:2px solid #404040;
+    border-top:2px solid var(--border-light);
+    border-left:2px solid var(--border-light);
+    border-right:2px solid var(--border-dark);
+    border-bottom:2px solid var(--border-dark);
 
     border-radius:0;
 
@@ -386,16 +439,22 @@ select:focus{
     max-width:100%;
 }
   .party-card:hover{
-    background:#D4D0C8;
+    opacity: 0.9;
+}
+  .party-card.is-saved-member{
+    background:var(--saved-party-bg);
+}
+  .party-card.is-saved-member:hover{
+    background:var(--saved-party-hover);
 }
   .party-card.in-group{
 
-    background:#BFD7FF;
+    background:var(--panel-selected);
 
-    border-top:2px solid #404040;
-    border-left:2px solid #404040;
-    border-right:2px solid #FFFFFF;
-    border-bottom:2px solid #FFFFFF;
+    border-top:2px solid var(--border-dark);
+    border-left:2px solid var(--border-dark);
+    border-right:2px solid var(--border-light);
+    border-bottom:2px solid var(--border-light);
 
     box-shadow:none;
 }
@@ -414,7 +473,7 @@ select:focus{
 
     background:#FFF;
 
-    border:1px solid #808080;
+    border:1px solid var(--line);
 
     image-rendering:auto;
 }
@@ -439,6 +498,7 @@ select:focus{
     max-width:100%;
 
     width:100%;
+    color: var(--ink);
 }
   .party-meta{
 
@@ -451,7 +511,7 @@ select:focus{
     justify-content:center;
     gap:8px;
 
-    color:#000;
+    color:var(--ink);
 
     text-align:center;
 }
@@ -462,11 +522,11 @@ select:focus{
 
     font-size:10px;
 
-    color:#000;
+    color:var(--ink);
 
-    background:#E0E0E0;
+    background:var(--panel-alt);
 
-    border:1px solid #808080;
+    border:1px solid var(--line);
 
     border-radius:0;
 
@@ -481,14 +541,14 @@ select:focus{
     font-size:12px;
     font-weight:bold;
     padding:4px 6px;
-    border-top:2px solid #404040;
-    border-left:2px solid #404040;
-    border-right:2px solid #FFFFFF;
-    border-bottom:2px solid #FFFFFF;
+    border-top:2px solid var(--border-dark);
+    border-left:2px solid var(--border-dark);
+    border-right:2px solid var(--border-light);
+    border-bottom:2px solid var(--border-light);
     border-radius:0;
     margin-bottom:12px;
-    background:#FFFFFF;
-    color:#000;
+    background:var(--input-bg);
+    color:var(--ink);
   }
 
   .seatbar-wrap{position:relative;margin:6px 0 20px;}
@@ -498,20 +558,20 @@ select:focus{
     height:24px;
     border-radius:0;
     overflow:hidden;
-    background:#FFFFFF;
-    border-top:2px solid #404040;
-    border-left:2px solid #404040;
-    border-right:2px solid #FFFFFF;
-    border-bottom:2px solid #FFFFFF;
+    background:var(--input-bg);
+    border-top:2px solid var(--border-dark);
+    border-left:2px solid var(--border-dark);
+    border-right:2px solid var(--border-light);
+    border-bottom:2px solid var(--border-light);
   }
   .seatbar .seg{height:100%;transition:none;}
-  .seatbar .seg.remainder{background:#C0C0C0;background-image:repeating-linear-gradient(135deg,#C0C0C0,#C0C0C0 3px,#808080 3px,#808080 4px);}
+  .seatbar .seg.remainder{background:var(--panel);background-image:repeating-linear-gradient(135deg,var(--panel),var(--panel) 3px,var(--line) 3px,var(--line) 4px);}
   .seatbar-marker{
     position:absolute;
     top:-2px;
     height:28px;
     width:0;
-    border-left:2px solid #800000;
+    border-left:2px solid var(--rust);
     transition:none;
     pointer-events:none;
     z-index:2;
@@ -526,7 +586,7 @@ select:focus{
     font-weight:bold;
     color:#FFFFFF;
     white-space:nowrap;
-    background:#800000;
+    background:var(--rust);
     padding:1px 3px;
     border-radius:0;
   }
@@ -534,29 +594,29 @@ select:focus{
   .stat-row{display:flex;gap:8px;margin-bottom:12px;}
   .stat-badge{
     flex:1;
-    background:#C0C0C0;
-    border-top:2px solid #404040;
-    border-left:2px solid #404040;
-    border-right:2px solid #FFFFFF;
-    border-bottom:2px solid #FFFFFF;
+    background:var(--panel);
+    border-top:2px solid var(--border-dark);
+    border-left:2px solid var(--border-dark);
+    border-right:2px solid var(--border-light);
+    border-bottom:2px solid var(--border-light);
     border-radius:0;
     padding:6px 8px;
     text-align:center;
     transition:none;
   }
-  .stat-badge.met{background:#C6E7C6;}
+  .stat-badge.met{background:var(--green-soft);}
   .stat-value{
     display:block;
     font-family:"Courier New",monospace;
     font-weight:bold;
     font-size:20px;
-    color:#000000;
+    color:var(--ink);
   }
-  .stat-badge.met .stat-value{color:#008000;}
+  .stat-badge.met .stat-value{color:var(--green);}
   .stat-target{
     font-family:Tahoma,"MS Sans Serif",sans-serif;
     font-size:10px;
-    color:#000000;
+    color:var(--ink);
   }
 
   .status-banner{
@@ -564,17 +624,17 @@ select:focus{
     font-size:11px;
     padding:4px 6px;
     border-radius:0;
-    background:#C0C0C0;
-    color:#000000;
-    border-top:2px solid #404040;
-    border-left:2px solid #404040;
-    border-right:2px solid #FFFFFF;
-    border-bottom:2px solid #FFFFFF;
+    background:var(--panel);
+    color:var(--ink);
+    border-top:2px solid var(--border-dark);
+    border-left:2px solid var(--border-dark);
+    border-right:2px solid var(--border-light);
+    border-bottom:2px solid var(--border-light);
     margin-bottom:12px;
     transition:none;
   }
-  .status-banner.met{background:#C6E7C6;color:#008000;font-weight:bold;}
-  .status-banner.warn{background:#F0CACA;color:#800000;font-weight:bold;}
+  .status-banner.met{background:var(--green-soft);color:var(--green);font-weight:bold;}
+  .status-banner.warn{background:var(--rust-soft);color:var(--rust);font-weight:bold;}
 
   .assembly-list{
     list-style:none;
@@ -585,11 +645,11 @@ select:focus{
     gap:4px;
     max-height:240px;
     overflow-y:auto;
-    background:#FFFFFF;
-    border-top:2px solid #404040;
-    border-left:2px solid #404040;
-    border-right:2px solid #FFFFFF;
-    border-bottom:2px solid #FFFFFF;
+    background:var(--input-bg);
+    border-top:2px solid var(--border-dark);
+    border-left:2px solid var(--border-dark);
+    border-right:2px solid var(--border-light);
+    border-bottom:2px solid var(--border-light);
   }
   .assembly-list li{
     display:flex;
@@ -597,30 +657,31 @@ select:focus{
     gap:8px;
     padding:3px 6px;
     border-radius:0;
-    background:#C0C0C0;
-    border:1px solid #808080;
+    background:var(--panel);
+    border:1px solid var(--line);
     font-family:Tahoma,"MS Sans Serif",sans-serif;
     font-size:11px;
+    color:var(--ink);
   }
   .assembly-list img{
     width:24px;
     height:24px;
     border-radius:0;
-    border:1px solid #808080;
+    border:1px solid var(--line);
     object-fit:contain;
     background:#FFFFFF;
     flex-shrink:0;
   }
-  .assembly-list .name{font-weight:bold;font-size:11px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
-  .assembly-list .ctry{font-family:Tahoma,"MS Sans Serif",sans-serif;font-size:10px;color:#404040;flex-shrink:0;}
-  .assembly-list .seats{font-family:"Courier New",monospace;font-size:11px;font-weight:bold;color:#000000;width:28px;text-align:right;flex-shrink:0;}
+  .assembly-list .name{font-weight:bold;font-size:11px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;color:var(--ink);}
+  .assembly-list .ctry{font-family:Tahoma,"MS Sans Serif",sans-serif;font-size:10px;color:var(--ink-soft);flex-shrink:0;}
+  .assembly-list .seats{font-family:"Courier New",monospace;font-size:11px;font-weight:bold;color:var(--ink);width:28px;text-align:right;flex-shrink:0;}
   .assembly-list .rm{
-    border-top:2px solid #FFFFFF;
-    border-left:2px solid #FFFFFF;
-    border-right:2px solid #404040;
-    border-bottom:2px solid #404040;
-    background:#C0C0C0;
-    color:#000;
+    border-top:2px solid var(--border-light);
+    border-left:2px solid var(--border-light);
+    border-right:2px solid var(--border-dark);
+    border-bottom:2px solid var(--border-dark);
+    background:var(--panel);
+    color:var(--ink);
     cursor:pointer;
     font-size:11px;
     font-weight:bold;
@@ -628,7 +689,7 @@ select:focus{
     padding:1px 5px;
     flex-shrink:0;
   }
-  .assembly-list .rm:hover{background:#800000;color:#FFFFFF;}
+  .assembly-list .rm:hover{background:var(--rust);color:#FFFFFF;}
 
   .assembly-actions{display:flex;gap:8px;}
   .assembly-actions .btn{flex:1;}
@@ -637,11 +698,11 @@ select:focus{
   .archive{margin-top:24px;}
   .archive-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;}
   .archive-card{
-    background:#C0C0C0;
-    border-top:2px solid #FFFFFF;
-    border-left:2px solid #FFFFFF;
-    border-right:2px solid #404040;
-    border-bottom:2px solid #404040;
+    background:var(--panel);
+    border-top:2px solid var(--border-light);
+    border-left:2px solid var(--border-light);
+    border-right:2px solid var(--border-dark);
+    border-bottom:2px solid var(--border-dark);
     border-radius:0;
     padding:8px;
     font-family:Tahoma,"MS Sans Serif",sans-serif;
@@ -651,12 +712,15 @@ select:focus{
     font-weight:bold;
     font-size:12px;
     margin-bottom:4px;
-    color:#000080;
+    color:var(--gold);
+  }
+  [data-theme="dark"] .archive-card .aname{
+    color:#80A0FF;
   }
   .archive-card .astats{
     font-family:Tahoma,"MS Sans Serif",sans-serif;
     font-size:10px;
-    color:#404040;
+    color:var(--ink-soft);
     margin-bottom:6px;
   }
   .archive-card .astamp{
@@ -667,18 +731,25 @@ select:focus{
     padding:2px 6px;
     border-radius:0;
     margin-bottom:8px;
-    border-top:2px solid #404040;
-    border-left:2px solid #404040;
-    border-right:2px solid #FFFFFF;
-    border-bottom:2px solid #FFFFFF;
+    border-top:2px solid var(--border-dark);
+    border-left:2px solid var(--border-dark);
+    border-right:2px solid var(--border-light);
+    border-bottom:2px solid var(--border-light);
   }
-  .astamp.met{background:#C6E7C6;color:#008000;}
-  .astamp.warn{background:#F0CACA;color:#800000;}
+  .astamp.met{background:var(--green-soft);color:var(--green);}
+  .astamp.warn{background:var(--rust-soft);color:var(--rust);}
   .dot-row{display:flex;flex-wrap:wrap;gap:2px;margin-bottom:8px;}
-  .dot-row span{width:10px;height:10px;border-radius:0;border:1px solid #404040;display:inline-block;}
+  .dot-row span{width:10px;height:10px;border-radius:0;border:1px solid var(--border-dark);display:inline-block;}
   .archive-actions{display:flex;gap:6px;}
 
   @media (prefers-reduced-motion:reduce){ *{transition:none !important;} }
+  
+  @font-face {
+  font-family: 'VCR OSD Mono';
+  src: url('./VCR_OSD_MONO_1.01.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
 </style>
 </head>
 <body>
@@ -691,28 +762,35 @@ select:focus{
       <p class="subtitle">Assemble a European Parliament political group from national parties. Per the rules, a group needs at least 23 MEPs from at least a quarter of member states (7 currently).</p>
       <p class="session-note">Export a group before you navigate away if you want to save it.</p>
     </div>
-    <div class="eu-stars-container" aria-hidden="true">
-      <svg width="60" height="60" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <g id="eu-star">
-            <polygon points="0,-6 1.76,-1.85 5.71,-1.85 2.52,0.46 3.71,4.3 0,1.95 -3.71,4.3 -2.52,0.46 -5.71,-1.85 -1.76,-1.85" fill="#FFCC00"/>
+    <div class="masthead-right">
+      <button type="button" id="themeToggleBtn" class="theme-toggle-btn" aria-label="Toggle theme">
+        <span id="themeIcon">🌙</span> <span id="themeLabel">Dark</span>
+      </button>
+      <div class="eu-stars-container" aria-hidden="true">
+        <svg width="60" height="60" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <g id="eu-star">
+              <polygon points="0,-6 1.76,-1.85 5.71,-1.85 2.52,0.46 3.71,4.3 0,1.95 -3.71,4.3 -2.52,0.46 -5.71,-1.85 -1.76,-1.85" fill="#FFCC00"/>
+            </g>
+          </defs>
+          <g transform="translate(50,50)">
+            <use href="#eu-star" y="-34"/>
+            <use href="#eu-star" x="17" y="-29.4"/>
+            <use href="#eu-star" x="29.4" y="-17"/>
+            <use href="#eu-star" x="34"/>
+            <use href="#eu-star" x="29.4" y="17"/>
+            <use href="#eu-star" x="17" y="29.4"/>
+            <use href="#eu-star" y="34"/>
+            <use href="#eu-star" x="-17" y="29.4"/>
+            <use href="#eu-star" x="-29.4" y="17"/>
+            <use href="#eu-star" x="-34"/>
+            <use href="#eu-star" x="-29.4" y="-17"/>
+            <use href="#eu-star" x="-17" y="-29.4"/>
           </g>
-        </defs>
-        <g transform="translate(50,50)">
-          <use href="#eu-star" y="-34"/>
-          <use href="#eu-star" x="17" y="-29.4"/>
-          <use href="#eu-star" x="29.4" y="-17"/>
-          <use href="#eu-star" x="34"/>
-          <use href="#eu-star" x="29.4" y="17"/>
-          <use href="#eu-star" x="17" y="29.4"/>
-          <use href="#eu-star" y="34"/>
-          <use href="#eu-star" x="-17" y="29.4"/>
-          <use href="#eu-star" x="-29.4" y="17"/>
-          <use href="#eu-star" x="-34"/>
-          <use href="#eu-star" x="-29.4" y="-17"/>
-          <use href="#eu-star" x="-17" y="-29.4"/>
-        </g>
-      </svg>
+		  
+		  
+        </svg>
+      </div>
     </div>
   </header>
 
@@ -842,6 +920,28 @@ select:focus{
 <script>
 (function(){
   "use strict";
+
+  /* ---------------- theme toggle ---------------- */
+  var themeToggleBtn = document.getElementById("themeToggleBtn");
+  var themeIcon = document.getElementById("themeIcon");
+  var themeLabel = document.getElementById("themeLabel");
+
+  function setTheme(theme) {
+    if (theme === "dark") {
+      document.documentElement.setAttribute("data-theme", "dark");
+      themeIcon.textContent = "☀️";
+      themeLabel.textContent = "Light";
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+      themeIcon.textContent = "🌙";
+      themeLabel.textContent = "Dark";
+    }
+  }
+
+  themeToggleBtn.addEventListener("click", function() {
+    var isDark = document.documentElement.getAttribute("data-theme") === "dark";
+    setTheme(isDark ? "light" : "dark");
+  });
 
   /* ---------------- state ---------------- */
   var workspace = { memberIds: [] };
@@ -1264,8 +1364,13 @@ select:focus{
 
     visible.forEach(function(p){
       var inGroup = workspace.memberIds.indexOf(p.id) > -1;
+      var chipNames = groupNamesFor(p.id);
+      var isSavedMember = chipNames.length > 0;
+
       var card = document.createElement("div");
-      card.className = "party-card" + (inGroup ? " in-group" : "");
+      card.className = "party-card" + 
+        (inGroup ? " in-group" : "") + 
+        (!inGroup && isSavedMember ? " is-saved-member" : "");
 
       var swatch = document.createElement("div");
       swatch.className = "swatch"; swatch.style.background = p.color;
@@ -1286,13 +1391,12 @@ select:focus{
       meta.innerHTML = "<span>" + p.country + "</span><span>" + p.seats + " seats</span>";
       card.appendChild(meta);
 
-      var chipNames = groupNamesFor(p.id);
       if(chipNames.length){
         var chips = document.createElement("div");
         chips.className = "chips";
         chipNames.forEach(function(gn){
           var c = document.createElement("span");
-          c.className = "chip"; c.textContent = "In " + gn;
+          c.className = "chip"; c.textContent = gn;
           chips.appendChild(c);
         });
         card.appendChild(chips);
@@ -1487,9 +1591,36 @@ select:focus{
 
       var actions = document.createElement("div");
       actions.className = "archive-actions";
+
+      var restoreBtn = document.createElement("button");
+      restoreBtn.className = "btn btn-primary btn-small"; restoreBtn.textContent = "Restore";
+      restoreBtn.title = "Restore this group composition to the builder";
+      restoreBtn.addEventListener("click", function(){
+        g.members.forEach(function(m){
+          var exists = parties.some(function(p){ return p.id === m.sourceId; });
+          if(!exists){
+            parties.push({
+              id: m.sourceId,
+              name: m.name,
+              acronym: m.acronym,
+              country: m.country,
+              seats: m.seats,
+              logo: m.logo,
+              color: m.color
+            });
+          }
+        });
+        workspace.memberIds = g.members.map(function(m){ return m.sourceId; });
+        groupNameInput.value = g.name;
+        renderRoster();
+        renderAssembly();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
       var expBtn = document.createElement("button");
       expBtn.className = "btn btn-outline btn-small"; expBtn.textContent = "Export";
       expBtn.addEventListener("click", function(){ exportGroupImage(g.name, g.members, g.stats); });
+
       var delBtn = document.createElement("button");
       delBtn.className = "btn btn-ghost btn-small"; delBtn.textContent = "Delete";
       delBtn.addEventListener("click", function(){
@@ -1497,7 +1628,10 @@ select:focus{
         savedGroups = savedGroups.filter(function(x){ return x.id !== g.id; });
         renderArchive(); renderRoster();
       });
-      actions.appendChild(expBtn); actions.appendChild(delBtn);
+
+      actions.appendChild(restoreBtn);
+      actions.appendChild(expBtn);
+      actions.appendChild(delBtn);
       card.appendChild(actions);
 
       archiveGrid.appendChild(card);
@@ -1530,15 +1664,24 @@ select:focus{
       var ctx = canvas.getContext("2d");
       ctx.scale(scale, scale);
 
+      var isDark = document.documentElement.getAttribute("data-theme") === "dark";
+
+      // Colors setup
+      var panelBg = isDark ? "#16202b" : "#C0C0C0";
+      var textMain = isDark ? "#FFFFFF" : "#000000";
+      var inputBg = isDark ? "#10171e" : "#FFFFFF";
+      var borderLight = isDark ? "#404040" : "#FFFFFF";
+      var borderDark = isDark ? "#000000" : "#404040";
+
       // Window Background
-      ctx.fillStyle = "#C0C0C0";
+      ctx.fillStyle = panelBg;
       ctx.fillRect(0, 0, width, height);
 
       // Window Outer Bevel (Outset 3D border)
-      ctx.fillStyle = "#FFFFFF";
+      ctx.fillStyle = borderLight;
       ctx.fillRect(0, 0, width, 2);
       ctx.fillRect(0, 0, 2, height);
-      ctx.fillStyle = "#404040";
+      ctx.fillStyle = borderDark;
       ctx.fillRect(width - 2, 0, 2, height);
       ctx.fillRect(0, height - 2, width, 2);
 
@@ -1556,15 +1699,15 @@ select:focus{
       var btnX = width - 60;
       ["_", "\u25A1", "\u2715"].forEach(function(sym, idx){
         var bx = btnX + idx * 17;
-        ctx.fillStyle = "#C0C0C0";
+        ctx.fillStyle = panelBg;
         ctx.fillRect(bx, 6, 14, 14);
-        ctx.fillStyle = "#FFFFFF";
+        ctx.fillStyle = borderLight;
         ctx.fillRect(bx, 6, 14, 1);
         ctx.fillRect(bx, 6, 1, 14);
-        ctx.fillStyle = "#404040";
+        ctx.fillStyle = borderDark;
         ctx.fillRect(bx + 13, 6, 1, 14);
         ctx.fillRect(bx, 19, 14, 1);
-        ctx.fillStyle = "#000000";
+        ctx.fillStyle = textMain;
         ctx.font = "bold 9px Tahoma, sans-serif";
         ctx.textAlign = "center";
         ctx.fillText(sym, bx + 7, 13);
@@ -1574,36 +1717,36 @@ select:focus{
       ctx.textAlign = "left";
       ctx.textBaseline = "alphabetic";
 
-      ctx.fillStyle = "#FFFFFF";
+      ctx.fillStyle = inputBg;
       ctx.fillRect(10, 32, width - 20, 52);
-      ctx.fillStyle = "#404040";
+      ctx.fillStyle = borderDark;
       ctx.fillRect(10, 32, width - 20, 2);
       ctx.fillRect(10, 32, 2, 52);
-      ctx.fillStyle = "#FFFFFF";
+      ctx.fillStyle = borderLight;
       ctx.fillRect(10, 82, width - 20, 2);
       ctx.fillRect(width - 12, 32, 2, 52);
 
-      ctx.fillStyle = "#000080";
+      ctx.fillStyle = isDark ? "#80A0FF" : "#000080";
       ctx.font = "bold 14px Tahoma, sans-serif";
       ctx.fillText(name, 18, 52);
 
       ctx.font = "11px Tahoma, sans-serif";
-      ctx.fillStyle = "#000000";
+      ctx.fillStyle = textMain;
       ctx.fillText(stats.totalSeats + " MEPs   |   " + stats.countryCount + " member states   |   " + members.length + " parties", 18, 70);
 
       // Threshold Badge
       ctx.font = "bold 10px Tahoma, sans-serif";
       if(stats.meets){
-        ctx.fillStyle = "#008000";
+        ctx.fillStyle = isDark ? "#00FF00" : "#008000";
         ctx.fillText("[\u2713 MEETS THRESHOLD]", width - 170, 52);
       } else {
-        ctx.fillStyle = "#800000";
+        ctx.fillStyle = isDark ? "#FF6B6B" : "#800000";
         ctx.fillText("[! BELOW THRESHOLD]", width - 170, 52);
       }
 
       // Seat composition bar
       var barX = 10, barY = 92, barW = width - 20, barH = 18;
-      ctx.fillStyle = "#404040";
+      ctx.fillStyle = borderDark;
       ctx.fillRect(barX, barY, barW, barH);
       
       var layout = computeSeatBarLayout(members, stats.totalSeats);
@@ -1616,11 +1759,11 @@ select:focus{
         bx += w;
       });
       if(layout.remainderPct > 0){
-        ctx.fillStyle = "#C0C0C0";
+        ctx.fillStyle = panelBg;
         ctx.fillRect(bx, barY + 1, (layout.remainderPct / 100) * innerW, barH - 2);
       }
       var markerX = barX + 1 + (layout.markerPct / 100) * innerW;
-      ctx.fillStyle = "#800000";
+      ctx.fillStyle = isDark ? "#FF6B6B" : "#800000";
       ctx.fillRect(markerX - 1, barY - 2, 2, barH + 4);
       ctx.font = "bold 9px Tahoma, sans-serif";
       ctx.textAlign = "center";
@@ -1630,12 +1773,12 @@ select:focus{
       // Members Inset Panel
       var listY = 120;
       var listH = members.length * rowH + 6;
-      ctx.fillStyle = "#FFFFFF";
+      ctx.fillStyle = inputBg;
       ctx.fillRect(10, listY, width - 20, listH);
-      ctx.fillStyle = "#404040";
+      ctx.fillStyle = borderDark;
       ctx.fillRect(10, listY, width - 20, 2);
       ctx.fillRect(10, listY, 2, listH);
-      ctx.fillStyle = "#FFFFFF";
+      ctx.fillStyle = borderLight;
       ctx.fillRect(10, listY + listH - 2, width - 20, 2);
       ctx.fillRect(width - 12, listY, 2, listH);
 
@@ -1644,12 +1787,12 @@ select:focus{
         var img = images[idx];
         var logoSize = 22;
         
-        ctx.fillStyle = "#C0C0C0";
+        ctx.fillStyle = panelBg;
         ctx.fillRect(14, y, width - 28, rowH - 4);
-        ctx.fillStyle = "#FFFFFF";
+        ctx.fillStyle = borderLight;
         ctx.fillRect(14, y, width - 28, 1);
         ctx.fillRect(14, y, 1, rowH - 4);
-        ctx.fillStyle = "#808080";
+        ctx.fillStyle = borderDark;
         ctx.fillRect(width - 15, y, 1, rowH - 4);
         ctx.fillRect(14, y + rowH - 5, width - 28, 1);
 
@@ -1666,18 +1809,18 @@ select:focus{
           ctx.drawImage(img, 26, y + 4, logoSize, logoSize);
         }
 
-        ctx.fillStyle = "#000000";
+        ctx.fillStyle = textMain;
         ctx.font = "bold 11px Tahoma, sans-serif";
         ctx.textAlign = "left";
         ctx.fillText(m.name, 56, y + 17);
 
         ctx.font = "10px Tahoma, sans-serif";
-        ctx.fillStyle = "#404040";
+        ctx.fillStyle = isDark ? "#A0A0A0" : "#404040";
         ctx.fillText(m.country, width - 120, y + 17);
 
         ctx.textAlign = "right";
         ctx.font = "bold 11px 'Courier New', monospace";
-        ctx.fillStyle = "#000000";
+        ctx.fillStyle = textMain;
         ctx.fillText(m.seats + " seats", width - 20, y + 17);
         ctx.textAlign = "left";
 
@@ -1686,18 +1829,18 @@ select:focus{
 
       // Status Bar
       var footerY = height - 22;
-      ctx.fillStyle = "#C0C0C0";
+      ctx.fillStyle = panelBg;
       ctx.fillRect(10, footerY, width - 20, 16);
-      ctx.fillStyle = "#404040";
+      ctx.fillStyle = borderDark;
       ctx.fillRect(10, footerY, width - 20, 1);
       ctx.fillRect(10, footerY, 1, 16);
-      ctx.fillStyle = "#FFFFFF";
+      ctx.fillStyle = borderLight;
       ctx.fillRect(10, footerY + 15, width - 20, 1);
       ctx.fillRect(width - 11, footerY, 1, 16);
 
-      ctx.fillStyle = "#000000";
-      ctx.font = "10px Tahoma, sans-serif";
-      ctx.fillText("", 14, footerY + 12);
+      ctx.fillStyle = textMain;
+      ctx.font = "10px 'VCR OSD Mono', monospace";
+      ctx.fillText("bananasareviolet.github.io/epgroupbuilder", 14, footerY + 12);
 
       canvas.toBlob(function(blob){
         if(!blob){
