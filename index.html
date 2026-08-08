@@ -8,6 +8,13 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
 
+  @font-face {
+    font-family: 'VCR OSD Mono';
+    src: url('./VCR_OSD_MONO_1.01.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
 :root{
   --bg-main:#5b5eaf;
   --panel:#C0C0C0;
@@ -128,8 +135,8 @@
 }
 
 h1{
-    font-family:Tahoma;
-    font-size:18px;
+    font-family:'VCR OSD Mono', monospace;
+    font-size:20px;
     font-weight:bold;
     margin:2px 0;
     color:#ffffff;
@@ -187,10 +194,10 @@ h1{
 
     background:#000080;
 }
-  .panel-head-actions{display:flex;gap:8px;flex-wrap:wrap;}
+  .panel-head-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
   .assembly-panel{position:sticky;top:24px;}
 
-  /* ---------- Windows 95 buttons ---------- */
+  /* ---------- Windows 95 buttons & inputs ---------- */
 
 .btn{
     font-family:Tahoma,"MS Sans Serif",Verdana,sans-serif;
@@ -249,6 +256,20 @@ h1{
     padding:2px 8px;
 }
 
+.preset-select {
+    font-family: Tahoma, "MS Sans Serif", Verdana, sans-serif;
+    font-size: 11px;
+    background: var(--input-bg);
+    color: var(--ink);
+    padding: 2px 4px;
+    border-top: 2px solid var(--border-dark);
+    border-left: 2px solid var(--border-dark);
+    border-right: 2px solid var(--border-light);
+    border-bottom: 2px solid var(--border-light);
+    border-radius: 0;
+    cursor: pointer;
+}
+
   /* ---------- import ---------- */
   .import-help{font-family:var(--font-mono);font-size:11px;color:var(--ink-soft);margin:0 0 12px;line-height:1.6;}
   .import-help code{background:var(--panel-alt);padding:1px 5px;border-radius:3px;color:var(--ink);}
@@ -263,7 +284,7 @@ h1{
   .add-form.hidden{display:none;}
   .logo-field{display:flex;flex-direction:column;align-items:center;gap:8px;}
   .logo-preview{width:78px;height:78px;border-radius:50%;border:1.5px dashed var(--line);
-    display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--panel);
+    display:flex;align-items:center;justify-content:center;overflow:hidden;background:transparent;
     font-family:var(--font-mono);font-size:10px;color:var(--ink-soft);text-align:center;cursor:pointer;}
   .logo-preview img{width:100%;height:100%;object-fit:cover;}
   .logo-field input[type=file]{display:none;}
@@ -318,8 +339,8 @@ select:focus{
   }
 
   /* ---------- roster grid ---------- */
-  .roster-controls{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
-  .search-wrap{position:relative;flex:1 1 200px;}
+  .roster-controls{display:flex;align-items:flex-end;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+  .search-wrap{position:relative;flex:1 1 180px;}
   .search-input{
 
     background:var(--input-bg);
@@ -342,10 +363,20 @@ select:focus{
     background: none; border: none; color: var(--ink); cursor: pointer;
   }
   .search-clear:hover{color:var(--rust);}
-  .sort-wrap, .view-wrap{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+  .sort-wrap, .filter-wrap{display:flex;align-items:center;gap:6px;flex-shrink:0;}
   .sort-label{font-family:var(--font-mono);font-size:11px;color:var(--ink-soft);
     text-transform:uppercase;letter-spacing:.04em;margin:0;}
   .sort-select{width:auto;padding:6px 10px;font-size:12.5px;}
+
+  .view-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;margin-left:auto;}
+  .ungrouped-counter{
+    font-family:'VCR OSD Mono', monospace;
+    font-size:12px;
+    color:var(--ink);
+    text-align:right;
+    white-space:nowrap;
+  }
+  .view-row{display:flex;align-items:center;gap:6px;}
 
   .roster-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px;}
   
@@ -471,9 +502,9 @@ select:focus{
 
     object-fit:contain;
 
-    background:#FFF;
+    background:transparent;
 
-    border:1px solid var(--line);
+    border:none;
 
     image-rendering:auto;
 }
@@ -667,9 +698,9 @@ select:focus{
     width:24px;
     height:24px;
     border-radius:0;
-    border:1px solid var(--line);
+    border:none;
     object-fit:contain;
-    background:#FFFFFF;
+    background:transparent;
     flex-shrink:0;
   }
   .assembly-list .name{font-weight:bold;font-size:11px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;color:var(--ink);}
@@ -743,13 +774,6 @@ select:focus{
   .archive-actions{display:flex;gap:6px;}
 
   @media (prefers-reduced-motion:reduce){ *{transition:none !important;} }
-  
-  @font-face {
-  font-family: 'VCR OSD Mono';
-  src: url('./VCR_OSD_MONO_1.01.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
 </style>
 </head>
 <body>
@@ -787,8 +811,6 @@ select:focus{
             <use href="#eu-star" x="-29.4" y="-17"/>
             <use href="#eu-star" x="-17" y="-29.4"/>
           </g>
-		  
-		  
         </svg>
       </div>
     </div>
@@ -801,6 +823,17 @@ select:focus{
       <div class="panel-head">
         <h2>Party Roster</h2>
         <div class="panel-head-actions">
+          <select id="presetSelect" class="preset-select" aria-label="Load Group Preset">
+            <option value="" disabled selected>Load Group Preset...</option>
+            <option value="EPP">EPP</option>
+            <option value="Renew">Renew</option>
+            <option value="S&D">S&D</option>
+            <option value="Greens/EFA">Greens/EFA</option>
+            <option value="ECR">ECR</option>
+            <option value="ESN">ESN</option>
+            <option value="Left">Left</option>
+            <option value="Non-Inscrits">Non-Inscrits</option>
+          </select>
           <button id="importBtn" class="btn btn-ghost btn-small" type="button">Import spreadsheet</button>
           <input type="file" id="importInput" accept=".xlsx,.xls,.csv,.ods" hidden />
           <button id="toggleAddForm" class="btn btn-ghost btn-small" type="button">+ Add manually</button>
@@ -864,14 +897,25 @@ select:focus{
             <option value="seats">Seats (high&ndash;low)</option>
           </select>
         </div>
+        <div class="filter-wrap">
+          <label for="rosterFilterSelect" class="sort-label">Filter</label>
+          <select id="rosterFilterSelect" class="sort-select">
+            <option value="all">All parties</option>
+            <option value="ungrouped">Ungrouped only</option>
+            <option value="grouped">Grouped only</option>
+          </select>
+        </div>
         <div class="view-wrap">
-          <span class="sort-label">View</span>
-          <button type="button" id="viewCardsBtn" class="btn btn-small active">Cards</button>
-          <button type="button" id="viewCondensedBtn" class="btn btn-small">Columns</button>
+          <div id="ungroupedCounter" class="ungrouped-counter">0 parties ungrouped</div>
+          <div class="view-row">
+            <span class="sort-label">View</span>
+            <button type="button" id="viewCardsBtn" class="btn btn-small active">Cards</button>
+            <button type="button" id="viewCondensedBtn" class="btn btn-small">Columns</button>
+          </div>
         </div>
       </div>
 
-      <div class="empty-state" id="rosterEmpty">No parties yet. Import a spreadsheet or add one manually.</div>
+      <div class="empty-state" id="rosterEmpty">No parties yet. Import a spreadsheet or select a preset group above.</div>
       <div class="roster-grid" id="rosterGrid"></div>
     </section>
 
@@ -958,12 +1002,13 @@ select:focus{
   var THRESHOLD_SEATS = 23;
   var THRESHOLD_COUNTRIES = 7;
 
-  var parties = [];       // {id,name,country,seats,logo,color,acronym}
+  var parties = [];       // {id,name,country,seats,logo,color,acronym,epGroup}
   var savedGroups = [];   // {id,name,members:[snapshot],stats,timestamp}
   var idCounter = 1;
   var colorIndex = 0;
   var pendingLogo = null; // dataURL captured from file input before submit
   var rosterSort = "name"; // "name" | "acronym" | "country" | "seats"
+  var rosterFilter = "all"; // "all" | "ungrouped" | "grouped"
   var rosterSearch = "";
   var rosterView = "cards"; // "cards" | "condensed"
 
@@ -974,7 +1019,9 @@ select:focus{
   var $ = function(id){ return document.getElementById(id); };
   var rosterGrid = $("rosterGrid"), rosterEmpty = $("rosterEmpty");
   var rosterSortSelect = $("rosterSortSelect");
+  var rosterFilterSelect = $("rosterFilterSelect");
   var rosterSearchInput = $("rosterSearchInput"), rosterSearchClear = $("rosterSearchClear");
+  var ungroupedCounter = $("ungroupedCounter");
   var viewCardsBtn = $("viewCardsBtn"), viewCondensedBtn = $("viewCondensedBtn");
   var addForm = $("addPartyForm"), toggleAddFormBtn = $("toggleAddForm"), cancelAddBtn = $("cancelAddBtn");
   var logoInput = $("logoInput"), logoPreviewLabel = $("logoPreviewLabel");
@@ -982,6 +1029,7 @@ select:focus{
   var colourInput = $("colourInput"), colourDot = $("colourDot");
   var formError = $("formError");
   var importBtn = $("importBtn"), importInput = $("importInput"), importSummary = $("importSummary");
+  var presetSelect = $("presetSelect");
   var groupNameInput = $("groupNameInput");
   var seatBar = $("seatBar"), seatBarMarker = $("seatBarMarker");
   var seatStat = $("seatStat"), seatValue = $("seatValue");
@@ -1052,8 +1100,7 @@ select:focus{
           var canvas = document.createElement("canvas");
           canvas.width = size; canvas.height = size;
           var ctx = canvas.getContext("2d");
-          ctx.fillStyle = "#EEF0E9";
-          ctx.fillRect(0, 0, size, size);
+          ctx.clearRect(0, 0, size, size);
           var scale = Math.min(size / img.width, size / img.height);
           var w = img.width * scale, h = img.height * scale;
           ctx.drawImage(img, (size - w) / 2, (size - h) / 2, w, h);
@@ -1175,7 +1222,7 @@ select:focus{
     var color = parseHexColor(colourInput.value) || nextPaletteColor();
     var logo = pendingLogo || initialsAvatar(name, color, 160, acronym);
 
-    parties.push({ id: genId(), name: name, acronym: acronym, country: country, seats: seats, logo: logo, color: color });
+    parties.push({ id: genId(), name: name, acronym: acronym, country: country, seats: seats, logo: logo, color: color, epGroup: "" });
 
     resetAddForm();
     nameInput.focus();
@@ -1183,7 +1230,7 @@ select:focus{
     renderAssembly();
   });
 
-  /* ---------------- spreadsheet import ---------------- */
+  /* ---------------- spreadsheet import & presets ---------------- */
   importBtn.addEventListener("click", function(){ importInput.click(); });
 
   importInput.addEventListener("change", function(){
@@ -1221,10 +1268,10 @@ select:focus{
   });
 
   function processImportRows(rows){
-    if(!rows.length){
+    if(!rows || !rows.length){
       importSummary.textContent = "That file doesn't have any rows to import.";
       importSummary.className = "import-summary warn";
-      return;
+      return Promise.resolve();
     }
     var keys = Object.keys(rows[0]);
     var nameKey = findKey(keys, ["NAME", "PARTYNAME", "PARTY"]);
@@ -1233,11 +1280,12 @@ select:focus{
     var countryKey = findKey(keys, ["COUNTRY", "MEMBERSTATE", "NATION"]);
     var logoKey = findKey(keys, ["LOGO", "LOGOURL", "IMAGE", "IMAGEURL"]);
     var colourKey = findKey(keys, ["COLOUR", "COLOR", "COLOURCODE", "COLORCODE", "HEX"]);
+    var epGroupKey = findKey(keys, ["EPGROUP", "EP_GROUP", "GROUP", "POLITICALGROUP"]);
 
     if(!nameKey || !seatKey || !countryKey){
       importSummary.textContent = "Couldn't find NAME, EPSEAT, and COUNTRY columns in that file.";
       importSummary.className = "import-summary warn";
-      return;
+      return Promise.resolve();
     }
 
     var jobs = [];
@@ -1249,6 +1297,7 @@ select:focus{
       var country = String(row[countryKey] || "").trim();
       var seatsRaw = row[seatKey];
       var seats = parseInt(seatsRaw, 10);
+      var epGroup = epGroupKey ? String(row[epGroupKey] || "").trim() : "";
       var rowNum = i + 2;
 
       if(!name && !country && !seatsRaw) return;
@@ -1262,16 +1311,16 @@ select:focus{
 
       jobs.push(
         resolveLogoFromValue(logoRaw, color, name, acronym).then(function(logo){
-          return { id: genId(), name: name, acronym: acronym, country: finalCountry, seats: seats, logo: logo, color: color };
+          return { id: genId(), name: name, acronym: acronym, country: finalCountry, seats: seats, logo: logo, color: color, epGroup: epGroup };
         })
       );
     });
 
-    Promise.all(jobs).then(function(newParties){
+    return Promise.all(jobs).then(function(newParties){
       parties = parties.concat(newParties);
       renderRoster();
       renderAssembly();
-      var msg = "Imported " + newParties.length + " part" + (newParties.length === 1 ? "y" : "ies") + ".";
+      var msg = "Loaded " + newParties.length + " part" + (newParties.length === 1 ? "y" : "ies") + ".";
       if(skipped.length){
         var shown = skipped.slice(0, 4).join(", ");
         msg += " Skipped " + skipped.length + ": " + shown + (skipped.length > 4 ? ", \u2026" : "") + ".";
@@ -1284,6 +1333,62 @@ select:focus{
     });
   }
 
+  /* ---------------- preset loader ---------------- */
+  function loadPresetGroup(presetName) {
+    var hasGroupData = parties.some(function(p){ return p.epGroup; });
+
+    var applyPreset = function() {
+      var matching = parties.filter(function(p){
+        return p.epGroup && p.epGroup.trim().toLowerCase() === presetName.trim().toLowerCase();
+      });
+
+      if (matching.length === 0) {
+        alert("No parties found matching preset group: \"" + presetName + "\". Please ensure 'epgroupbuilder.xlsx' with an EPGROUP column is present in your GitHub repository or imported.");
+        return;
+      }
+
+      workspace.memberIds = matching.map(function(p){ return p.id; });
+      groupNameInput.value = presetName;
+      renderRoster();
+      renderAssembly();
+    };
+
+    if (parties.length === 0 || !hasGroupData) {
+      importSummary.textContent = "Loading spreadsheet data from repository \u2026";
+      importSummary.className = "import-summary";
+
+      fetch("epgroupbuilder.xlsx")
+        .then(function(res){
+          if (!res.ok) throw new Error("File not found");
+          return res.arrayBuffer();
+        })
+        .then(function(buffer){
+          var data = new Uint8Array(buffer);
+          var wb = XLSX.read(data, { type: "array" });
+          var sheet = wb.Sheets[wb.SheetNames[0]];
+          var rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+          return processImportRows(rows);
+        })
+        .then(function(){
+          applyPreset();
+        })
+        .catch(function(err){
+          importSummary.textContent = "Could not automatically fetch epgroupbuilder.xlsx from repository. Please import the file manually.";
+          importSummary.className = "import-summary warn";
+        });
+    } else {
+      applyPreset();
+    }
+  }
+
+  presetSelect.addEventListener("change", function(){
+    var val = presetSelect.value;
+    if (val) {
+      loadPresetGroup(val);
+      presetSelect.selectedIndex = 0;
+    }
+  });
+
   /* ---------------- roster rendering ---------------- */
   function groupNamesFor(partyId){
     return savedGroups.filter(function(g){
@@ -1291,14 +1396,30 @@ select:focus{
     }).map(function(g){ return g.name; });
   }
 
+  function getUngroupedCount(){
+    return parties.filter(function(p){
+      return groupNamesFor(p.id).length === 0;
+    }).length;
+  }
+
   function getVisibleParties(){
     var q = rosterSearch;
     var arr = parties.filter(function(p){
-      if(!q) return true;
-      return p.name.toLowerCase().indexOf(q) > -1 ||
-             (p.acronym && p.acronym.toLowerCase().indexOf(q) > -1) ||
-             p.country.toLowerCase().indexOf(q) > -1;
+      if(q) {
+        var match = p.name.toLowerCase().indexOf(q) > -1 ||
+               (p.acronym && p.acronym.toLowerCase().indexOf(q) > -1) ||
+               (p.epGroup && p.epGroup.toLowerCase().indexOf(q) > -1) ||
+               p.country.toLowerCase().indexOf(q) > -1;
+        if(!match) return false;
+      }
+
+      var savedCount = groupNamesFor(p.id).length;
+      if(rosterFilter === "ungrouped" && savedCount > 0) return false;
+      if(rosterFilter === "grouped" && savedCount === 0) return false;
+
+      return true;
     });
+
     if(rosterSort === "country"){
       arr.sort(function(a, b){ return a.country.localeCompare(b.country) || a.name.localeCompare(b.name); });
     } else if(rosterSort === "acronym"){
@@ -1317,6 +1438,11 @@ select:focus{
 
   rosterSortSelect.addEventListener("change", function(){
     rosterSort = rosterSortSelect.value;
+    renderRoster();
+  });
+
+  rosterFilterSelect.addEventListener("change", function(){
+    rosterFilter = rosterFilterSelect.value;
     renderRoster();
   });
 
@@ -1356,11 +1482,13 @@ select:focus{
       rosterGrid.classList.remove("condensed-view");
     }
 
+    ungroupedCounter.textContent = getUngroupedCount() + " parties ungrouped";
+
     var visible = getVisibleParties();
     rosterEmpty.hidden = visible.length > 0;
     rosterEmpty.textContent = parties.length === 0
-      ? "No parties yet. Import a spreadsheet or add one manually."
-      : "No parties match \u201c" + rosterSearchInput.value.trim() + "\u201d.";
+      ? "No parties yet. Import a spreadsheet or select a preset group above."
+      : "No parties match the selected filter/search criteria.";
 
     visible.forEach(function(p){
       var inGroup = workspace.memberIds.indexOf(p.id) > -1;
@@ -1549,7 +1677,7 @@ select:focus{
       id: genId(),
       name: name,
       members: members.map(function(m){
-        return { sourceId: m.id, name: m.name, acronym: m.acronym, country: m.country, seats: m.seats, logo: m.logo, color: m.color };
+        return { sourceId: m.id, name: m.name, acronym: m.acronym, country: m.country, seats: m.seats, logo: m.logo, color: m.color, epGroup: m.epGroup };
       }),
       stats: stats,
       timestamp: Date.now()
@@ -1606,7 +1734,8 @@ select:focus{
               country: m.country,
               seats: m.seats,
               logo: m.logo,
-              color: m.color
+              color: m.color,
+              epGroup: m.epGroup || ""
             });
           }
         });
@@ -1801,11 +1930,6 @@ select:focus{
         ctx.fillRect(18, y + 4, 4, logoSize);
 
         if(img){
-          ctx.fillStyle = "#FFFFFF";
-          ctx.fillRect(26, y + 4, logoSize, logoSize);
-          ctx.fillStyle = "#808080";
-          ctx.fillRect(26, y + 4, logoSize, 1);
-          ctx.fillRect(26, y + 4, 1, logoSize);
           ctx.drawImage(img, 26, y + 4, logoSize, logoSize);
         }
 
