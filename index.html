@@ -194,7 +194,7 @@ h1{
 
     background:#000080;
 }
-  .panel-head-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .panel-head-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
   .assembly-panel{position:sticky;top:24px;}
 
   /* ---------- Windows 95 buttons & inputs ---------- */
@@ -823,6 +823,8 @@ select:focus{
       <div class="panel-head">
         <h2>Party Roster</h2>
         <div class="panel-head-actions">
+          <button id="loadCurrentEpBtn" class="btn btn-ghost btn-small" type="button" title="Load current EP seating arrangement from repository database">Current EP Seating</button>
+          <button id="loadEuropeElectsBtn" class="btn btn-ghost btn-small" type="button" title="Load latest Europe Elects projection from repository database">Europe Elects Projection</button>
           <select id="presetSelect" class="preset-select" aria-label="Load Group Preset">
             <option value="" disabled selected>Load Group Preset...</option>
             <option value="EPP">EPP</option>
@@ -837,6 +839,7 @@ select:focus{
           <button id="importBtn" class="btn btn-ghost btn-small" type="button">Import spreadsheet</button>
           <input type="file" id="importInput" accept=".xlsx,.xls,.csv,.ods" hidden />
           <button id="toggleAddForm" class="btn btn-ghost btn-small" type="button">+ Add manually</button>
+          <button id="clearRosterBtn" class="btn btn-ghost btn-small" type="button" style="color:var(--rust); font-weight:bold;">Clear All</button>
         </div>
       </div>
       <p class="import-help">Spreadsheet columns: <code>NAME</code>, <code>EPSEAT</code>, <code>COUNTRY</code> + optional <code>ACRONYM</code>, <code>LOGO</code> (image URL) and <code>COLOUR</code> (hex code). Any header order works.</p>
@@ -915,7 +918,7 @@ select:focus{
         </div>
       </div>
 
-      <div class="empty-state" id="rosterEmpty">No parties yet. Import a spreadsheet or select a preset group above.</div>
+      <div class="empty-state" id="rosterEmpty">No parties yet. Import a spreadsheet, load database seating, or select a preset group above.</div>
       <div class="roster-grid" id="rosterGrid"></div>
     </section>
 
@@ -1029,6 +1032,9 @@ select:focus{
   var colourInput = $("colourInput"), colourDot = $("colourDot");
   var formError = $("formError");
   var importBtn = $("importBtn"), importInput = $("importInput"), importSummary = $("importSummary");
+  var loadCurrentEpBtn = $("loadCurrentEpBtn");
+  var loadEuropeElectsBtn = $("loadEuropeElectsBtn");
+  var clearRosterBtn = $("clearRosterBtn");
   var presetSelect = $("presetSelect");
   var groupNameInput = $("groupNameInput");
   var seatBar = $("seatBar"), seatBarMarker = $("seatBarMarker");
@@ -1267,7 +1273,7 @@ select:focus{
     reader.readAsArrayBuffer(file);
   });
 
-  function processImportRows(rows){
+  function processImportRows(rows, mode){
     if(!rows || !rows.length){
       importSummary.textContent = "That file doesn't have any rows to import.";
       importSummary.className = "import-summary warn";
@@ -1276,14 +1282,32 @@ select:focus{
     var keys = Object.keys(rows[0]);
     var nameKey = findKey(keys, ["NAME", "PARTYNAME", "PARTY"]);
     var acronymKey = findKey(keys, ["ACRONYM", "ABBREVIATION", "SHORTNAME"]);
-    var seatKey = findKey(keys, ["EPSEAT", "EPSEATS", "SEATS", "SEATCOUNT", "MEPS"]);
+    
+    // Resolve seats column based on mode
+    var seatKey;
+    if (mode === "europe_elects") {
+      seatKey = findKey(keys, ["EESEAT", "EESEATS", "EE_SEAT", "EE_SEATS", "PROJECTION", "PROJECTIONSEATS"]);
+    } else if (mode === "current") {
+      seatKey = findKey(keys, ["CURRENTSEAT", "CURRENTSEATS", "CURRENT_SEAT", "CURRENT_SEATS", "EPSEAT", "EPSEATS"]);
+    }
+    if (!seatKey) {
+      seatKey = findKey(keys, ["EPSEAT", "EPSEATS", "SEATS", "SEATCOUNT", "MEPS"]);
+    }
+
     var countryKey = findKey(keys, ["COUNTRY", "MEMBERSTATE", "NATION"]);
     var logoKey = findKey(keys, ["LOGO", "LOGOURL", "IMAGE", "IMAGEURL"]);
     var colourKey = findKey(keys, ["COLOUR", "COLOR", "COLOURCODE", "COLORCODE", "HEX"]);
-    var epGroupKey = findKey(keys, ["EPGROUP", "EP_GROUP", "GROUP", "POLITICALGROUP"]);
+    
+    var epGroupKey;
+    if (mode === "europe_elects") {
+      epGroupKey = findKey(keys, ["EEGROUP", "EE_GROUP", "PROJECTIONGROUP"]);
+    }
+    if (!epGroupKey) {
+      epGroupKey = findKey(keys, ["EPGROUP", "EP_GROUP", "GROUP", "POLITICALGROUP"]);
+    }
 
     if(!nameKey || !seatKey || !countryKey){
-      importSummary.textContent = "Couldn't find NAME, EPSEAT, and COUNTRY columns in that file.";
+      importSummary.textContent = "Couldn't find required NAME, EPSEAT/SEATS, and COUNTRY columns in that dataset.";
       importSummary.className = "import-summary warn";
       return Promise.resolve();
     }
@@ -1333,6 +1357,75 @@ select:focus{
     });
   }
 
+  /* ---------------- repository database loader ---------------- */
+  function fetchAndLoadDatabase(mode) {
+    importSummary.textContent = "Fetching spreadsheet database \u2026";
+    importSummary.className = "import-summary";
+
+    fetch("PresetGroups.xlsx")
+      .then(function(res){
+        if (!res.ok) throw new Error("File not found");
+        return res.arrayBuffer();
+      })
+      .then(function(buffer){
+        var data = new Uint8Array(buffer);
+        var wb = XLSX.read(data, { type: "array" });
+        
+        // Find sheet matching mode, or default to first sheet
+        var targetSheetName = wb.SheetNames[0];
+        if (mode === "europe_elects") {
+          var eeSheet = wb.SheetNames.find(function(s){
+            return /europe\s*elects|projection/i.test(s);
+          });
+          if (eeSheet) targetSheetName = eeSheet;
+        } else if (mode === "current") {
+          var curSheet = wb.SheetNames.find(function(s){
+            return /current|seating|ep\s*seating/i.test(s);
+          });
+          if (curSheet) targetSheetName = curSheet;
+        }
+
+        var sheet = wb.Sheets[targetSheetName];
+        var rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+        
+        // Wipe current active roster before loading database
+        parties = [];
+        workspace.memberIds = [];
+
+        return processImportRows(rows, mode);
+      })
+      .then(function(){
+        var modeLabel = (mode === "europe_elects") ? "Latest Europe Elects Projection" : "Current EP Seating Arrangement";
+        importSummary.textContent = "Loaded " + modeLabel + " from repository database.";
+        importSummary.className = "import-summary ok";
+      })
+      .catch(function(err){
+        importSummary.textContent = "Could not fetch database.";
+        importSummary.className = "import-summary warn";
+      });
+  }
+
+  loadCurrentEpBtn.addEventListener("click", function(){
+    fetchAndLoadDatabase("current");
+  });
+
+  loadEuropeElectsBtn.addEventListener("click", function(){
+    fetchAndLoadDatabase("europe_elects");
+  });
+
+  /* ---------------- clear all option ---------------- */
+  clearRosterBtn.addEventListener("click", function(){
+    if (parties.length === 0 && workspace.memberIds.length === 0) return;
+    if (confirm("Clear all parties from the party roster? (Note: Saved groups in memory are preserved and will restore their parties if re-edited).")) {
+      parties = [];
+      workspace.memberIds = [];
+      renderRoster();
+      renderAssembly();
+      importSummary.textContent = "Party roster cleared.";
+      importSummary.className = "import-summary";
+    }
+  });
+
   /* ---------------- preset loader ---------------- */
   function loadPresetGroup(presetName) {
     var hasGroupData = parties.some(function(p){ return p.epGroup; });
@@ -1343,7 +1436,7 @@ select:focus{
       });
 
       if (matching.length === 0) {
-        alert("No parties found matching preset group: \"" + presetName + "\". Please ensure 'epgroupbuilder.xlsx' with an EPGROUP column is present in your GitHub repository or imported.");
+        alert("No parties found matching preset group: \"" + presetName + "\". Please load the repository database or import a file containing EPGROUP data.");
         return;
       }
 
@@ -1354,10 +1447,10 @@ select:focus{
     };
 
     if (parties.length === 0 || !hasGroupData) {
-      importSummary.textContent = "Loading spreadsheet data from repository \u2026";
+      importSummary.textContent = "Loading database from repository \u2026";
       importSummary.className = "import-summary";
 
-      fetch("epgroupbuilder.xlsx")
+      fetch("PresetGroups.xlsx")
         .then(function(res){
           if (!res.ok) throw new Error("File not found");
           return res.arrayBuffer();
@@ -1367,13 +1460,13 @@ select:focus{
           var wb = XLSX.read(data, { type: "array" });
           var sheet = wb.Sheets[wb.SheetNames[0]];
           var rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
-          return processImportRows(rows);
+          return processImportRows(rows, "current");
         })
         .then(function(){
           applyPreset();
         })
         .catch(function(err){
-          importSummary.textContent = "Could not automatically fetch epgroupbuilder.xlsx from repository. Please import the file manually.";
+          importSummary.textContent = "Could not automatically fetch database from repository. Please import a file manually.";
           importSummary.className = "import-summary warn";
         });
     } else {
@@ -1487,7 +1580,7 @@ select:focus{
     var visible = getVisibleParties();
     rosterEmpty.hidden = visible.length > 0;
     rosterEmpty.textContent = parties.length === 0
-      ? "No parties yet. Import a spreadsheet or select a preset group above."
+      ? "No parties yet. Import a spreadsheet, load database seating, or select a preset group above."
       : "No parties match the selected filter/search criteria.";
 
     visible.forEach(function(p){
