@@ -2110,7 +2110,7 @@ select:focus{
       ctx.fillRect(4, 4, width - 8, 22);
 
       ctx.fillStyle = "#EAEAEA";
-      ctx.font = isDeltarune ? "11px '8bitoperator JVE Regular', monospace" : "bold 11px Tahoma, sans-serif";
+      ctx.font = isDeltarune ? "11px '8bitoperator JVE', monospace" : "bold 11px Tahoma, sans-serif";
       ctx.textAlign = "left";
       ctx.textBaseline = "middle";
       ctx.fillText("EP Group Builder - " + name, 10, 15);
@@ -2147,15 +2147,15 @@ select:focus{
       ctx.fillRect(width - 12, 32, 2, 52);
 
       ctx.fillStyle = isDeltarune ? "#00FFFF" : (isDark ? "#80A0FF" : "#000080");
-      ctx.font = isDeltarune ? "14px '8bitoperator JVE Regular', monospace" : "bold 14px Tahoma, sans-serif";
+      ctx.font = isDeltarune ? "14px '8bitoperator JVE', monospace" : "bold 14px Tahoma, sans-serif";
       ctx.fillText(name, 18, 52);
 
-      ctx.font = isDeltarune ? "11px '8bitoperator JVE Regular', monospace" : "11px Tahoma, sans-serif";
+      ctx.font = isDeltarune ? "11px '8bitoperator JVE', monospace" : "11px Tahoma, sans-serif";
       ctx.fillStyle = textMain;
       ctx.fillText(stats.totalSeats + " MEPs   |   " + stats.countryCount + " member states   |   " + members.length + " parties", 18, 70);
 
       // Threshold Badge
-      ctx.font = isDeltarune ? "10px '8bitoperator JVE Regular', monospace" : "bold 10px Tahoma, sans-serif";
+      ctx.font = isDeltarune ? "10px '8bitoperator JVE', monospace" : "bold 10px Tahoma, sans-serif";
       if(stats.meets){
         ctx.fillStyle = isDark ? "#00FF00" : "#008000";
         ctx.fillText("[\u2713 MEETS THRESHOLD]", width - 170, 52);
@@ -2185,7 +2185,7 @@ select:focus{
       var markerX = barX + 1 + (layout.markerPct / 100) * innerW;
       ctx.fillStyle = isDark ? "#FF6B6B" : "#800000";
       ctx.fillRect(markerX - 1, barY - 2, 2, barH + 4);
-      ctx.font = isDeltarune ? "9px '8bitoperator JVE Regular', monospace" : "bold 9px Tahoma, sans-serif";
+      ctx.font = isDeltarune ? "9px '8bitoperator JVE', monospace" : "bold 9px Tahoma, sans-serif";
       ctx.textAlign = "center";
       ctx.fillText("23", markerX, barY - 4);
       ctx.textAlign = "left";
@@ -2225,16 +2225,16 @@ select:focus{
         }
 
         ctx.fillStyle = textMain;
-        ctx.font = isDeltarune ? "11px '8bitoperator JVE Regular', monospace" : "bold 11px Tahoma, sans-serif";
+        ctx.font = isDeltarune ? "11px '8bitoperator JVE', monospace" : "bold 11px Tahoma, sans-serif";
         ctx.textAlign = "left";
         ctx.fillText(m.name, 56, y + 17);
 
-        ctx.font = isDeltarune ? "10px '8bitoperator JVE Regular', monospace" : "10px Tahoma, sans-serif";
+        ctx.font = isDeltarune ? "10px '8bitoperator JVE', monospace" : "10px Tahoma, sans-serif";
         ctx.fillStyle = isDeltarune ? "#EAEAEA" : (isDark ? "#A0A0A0" : "#404040");
         ctx.fillText(m.country, width - 120, y + 17);
 
         ctx.textAlign = "right";
-        ctx.font = isDeltarune ? "11px '8bitoperator JVE Regular', monospace" : "bold 11px 'Courier New', monospace";
+        ctx.font = isDeltarune ? "11px '8bitoperator JVE', monospace" : "bold 11px 'Courier New', monospace";
         ctx.fillStyle = textMain;
         ctx.fillText(m.seats + " seats", width - 20, y + 17);
         ctx.textAlign = "left";
@@ -2254,7 +2254,7 @@ select:focus{
       ctx.fillRect(width - 11, footerY, 1, 16);
 
       ctx.fillStyle = textMain;
-      ctx.font = isDeltarune ? "10px '8bitoperator JVE Regular', monospace" : "10px 'VCR OSD Mono', monospace";
+      ctx.font = isDeltarune ? "10px '8bitoperator JVE', monospace" : "10px 'VCR OSD Mono', monospace";
       ctx.fillText("bananasareviolet.github.io/epgroupbuilder", 14, footerY + 12);
 
       canvas.toBlob(function(blob){
