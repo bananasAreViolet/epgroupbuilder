@@ -10,7 +10,9 @@
 
   @font-face {
     font-family: 'VCR OSD Mono';
-    src: url('./VCR_OSD_MONO_1.01.ttf') format('truetype');
+    src: local('8bitoperator JVE Regular'), 
+         local('8bitoperator JVE'),
+		 url('./VCR_OSD_MONO_1.01.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
   }
@@ -1154,16 +1156,31 @@ select:focus{
 (function(){
   "use strict";
 
-  /* ---------------- theme toggle ---------------- */
+  /* ---------------- theme toggle & font verification ---------------- */
   var themeToggleBtn = document.getElementById("themeToggleBtn");
   var themeIcon = document.getElementById("themeIcon");
   var themeLabel = document.getElementById("themeLabel");
+
+  var hasDarknerFont = false;
+  
+  // Verify if 8bitoperator JVE / 8bitoperator_jve.ttf is available/installed
+  if (document.fonts && document.fonts.check) {
+    hasDarknerFont = document.fonts.check('16px "8bitoperator JVE"');
+    if (!hasDarknerFont) {
+      document.fonts.load('16px "8bitoperator JVE"').then(function() {
+        hasDarknerFont = document.fonts.check('16px "8bitoperator JVE"');
+      }).catch(function() {
+        hasDarknerFont = false;
+      });
+    }
+  } else {
+    hasDarknerFont = true;
+  }
 
   function setTheme(theme) {
     if (theme === "dark") {
       document.documentElement.setAttribute("data-theme", "dark");
       themeIcon.textContent = "⚔️";
-      themeLabel.textContent = "Darkner";
       themeLabel.textContent = "Darkner";
     } else if (theme === "deltarune") {
       document.documentElement.setAttribute("data-theme", "deltarune");
@@ -1179,7 +1196,12 @@ select:focus{
   themeToggleBtn.addEventListener("click", function() {
     var currentTheme = document.documentElement.getAttribute("data-theme");
     if (!currentTheme) {
-      setTheme("dark");
+      // Only show/enter Darkner mode if verified that 8bitoperator JVE is installed/available
+      if (hasDarknerFont) {
+        setTheme("dark");
+      } else {
+        setTheme("deltarune");
+      }
     } else if (currentTheme === "dark") {
       setTheme("deltarune");
     } else {
@@ -1480,7 +1502,6 @@ select:focus{
     var nameKey = findKey(keys, ["NAME", "PARTYNAME", "PARTY"]);
     var acronymKey = findKey(keys, ["ACRONYM", "ABBREVIATION", "SHORTNAME"]);
     
-    // Resolve seats column based on mode
     var seatKey;
     if (mode === "europe_elects") {
       seatKey = findKey(keys, ["EESEAT", "EESEATS", "EE_SEAT", "EE_SEATS", "PROJECTION", "PROJECTIONSEATS"]);
@@ -1568,7 +1589,6 @@ select:focus{
         var data = new Uint8Array(buffer);
         var wb = XLSX.read(data, { type: "array" });
         
-        // Find sheet matching mode, or default to first sheet
         var targetSheetName = wb.SheetNames[0];
         if (mode === "europe_elects") {
           var eeSheet = wb.SheetNames.find(function(s){
@@ -1585,7 +1605,6 @@ select:focus{
         var sheet = wb.Sheets[targetSheetName];
         var rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
         
-        // Wipe current active roster before loading database
         parties = [];
         workspace.memberIds = [];
 
@@ -2086,18 +2105,15 @@ select:focus{
       var isDark = document.documentElement.getAttribute("data-theme") === "dark";
       var isDeltarune = document.documentElement.getAttribute("data-theme") === "deltarune";
 
-      // Colors setup
       var panelBg = isDeltarune ? "#212123" : (isDark ? "#16202b" : "#C0C0C0");
       var textMain = isDeltarune ? "#EAEAEA" : (isDark ? "#FFFFFF" : "#000000");
       var inputBg = isDeltarune ? "#212123" : (isDark ? "#10171e" : "#FFFFFF");
       var borderLight = isDeltarune ? "#EAEAEA" : (isDark ? "#404040" : "#FFFFFF");
       var borderDark = isDeltarune ? "#EAEAEA" : (isDark ? "#000000" : "#404040");
 
-      // Window Background
       ctx.fillStyle = panelBg;
       ctx.fillRect(0, 0, width, height);
 
-      // Window Outer Bevel (Outset 3D border or solid border)
       ctx.fillStyle = borderLight;
       ctx.fillRect(0, 0, width, 2);
       ctx.fillRect(0, 0, 2, height);
@@ -2105,7 +2121,6 @@ select:focus{
       ctx.fillRect(width - 2, 0, 2, height);
       ctx.fillRect(0, height - 2, width, 2);
 
-      // Window Title Bar
       ctx.fillStyle = isDeltarune ? "#212123" : "#000080";
       ctx.fillRect(4, 4, width - 8, 22);
 
@@ -2115,7 +2130,6 @@ select:focus{
       ctx.textBaseline = "middle";
       ctx.fillText("EP Group Builder - " + name, 10, 15);
 
-      // Title bar buttons (_, [], X)
       var btnX = width - 60;
       ["_", "\u25A1", "\u2715"].forEach(function(sym, idx){
         var bx = btnX + idx * 17;
@@ -2133,7 +2147,6 @@ select:focus{
         ctx.fillText(sym, bx + 7, 13);
       });
 
-      // Group Header Info Inset Box
       ctx.textAlign = "left";
       ctx.textBaseline = "alphabetic";
 
@@ -2154,7 +2167,6 @@ select:focus{
       ctx.fillStyle = textMain;
       ctx.fillText(stats.totalSeats + " MEPs   |   " + stats.countryCount + " member states   |   " + members.length + " parties", 18, 70);
 
-      // Threshold Badge
       ctx.font = isDeltarune ? "10px '8bitoperator JVE', monospace" : "bold 10px Tahoma, sans-serif";
       if(stats.meets){
         ctx.fillStyle = isDark ? "#00FF00" : "#008000";
@@ -2164,7 +2176,6 @@ select:focus{
         ctx.fillText("[! BELOW THRESHOLD]", width - 170, 52);
       }
 
-      // Seat composition bar
       var barX = 10, barY = 92, barW = width - 20, barH = 18;
       ctx.fillStyle = borderDark;
       ctx.fillRect(barX, barY, barW, barH);
@@ -2190,7 +2201,6 @@ select:focus{
       ctx.fillText("23", markerX, barY - 4);
       ctx.textAlign = "left";
 
-      // Members Inset Panel
       var listY = 120;
       var listH = members.length * rowH + 6;
       ctx.fillStyle = inputBg;
@@ -2216,7 +2226,6 @@ select:focus{
         ctx.fillRect(width - 15, y, 1, rowH - 4);
         ctx.fillRect(14, y + rowH - 5, width - 28, 1);
 
-        // Party Color Indicator
         ctx.fillStyle = m.color;
         ctx.fillRect(18, y + 4, 4, logoSize);
 
@@ -2242,7 +2251,6 @@ select:focus{
         y += rowH;
       });
 
-      // Status Bar
       var footerY = height - 22;
       ctx.fillStyle = panelBg;
       ctx.fillRect(10, footerY, width - 20, 16);
