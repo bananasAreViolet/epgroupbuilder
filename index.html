@@ -15,6 +15,13 @@
     font-style: normal;
   }
 
+  @font-face {
+    font-family: '8bitoperator JVE Regular';
+    src: url('./8bitoperator_jve.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
 :root{
   --bg-main:#5b5eaf;
   --panel:#C0C0C0;
@@ -44,6 +51,7 @@
   --font-display:"Tahoma","MS Sans Serif",Verdana,sans-serif;
   --font-body:"Tahoma","MS Sans Serif",Verdana,sans-serif;
   --font-mono:"Courier New",monospace;
+  --font-response:'8bitoperator JVE Regular', '8bitoperator JVE', 'VCR OSD Mono', monospace;
 }
 
 [data-theme="dark"] {
@@ -68,6 +76,184 @@
 
   --saved-party-bg:#3d2c42;
   --saved-party-hover:#4f3a56;
+}
+
+/* ---------- DELTARUNE MODE STYLES ---------- */
+[data-theme="deltarune"] {
+  --bg-main: #0c0c0e;
+  --panel: #212123;
+  --panel-alt: #212123;
+  --panel-selected: #2d2d32;
+
+  --ink: #EAEAEA;
+  --ink-soft: #EAEAEA;
+
+  --gold: #00FFFF;
+  --gold-soft: #212123;
+
+  --green: #00FF66;
+  --green-soft: #183321;
+
+  --rust: #FF4545;
+  --rust-soft: #381818;
+
+  --line: #EAEAEA;
+  --border-light: #EAEAEA;
+  --border-dark: #EAEAEA;
+  --input-bg: #212123;
+
+  --saved-party-bg: #2b2b2f;
+  --saved-party-hover: #36363b;
+}
+
+[data-theme="deltarune"],
+[data-theme="deltarune"] body,
+[data-theme="deltarune"] * {
+  font-family: '8bitoperator JVE Regular', '8bitoperator JVE', monospace !important;
+  font-weight: normal !important;
+}
+
+[data-theme="deltarune"] body {
+  font-size: 15px;
+}
+
+/* Deltarune Dialogue Box Aesthetic */
+[data-theme="deltarune"] .app,
+[data-theme="deltarune"] .panel,
+[data-theme="deltarune"] .masthead,
+[data-theme="deltarune"] .party-card,
+[data-theme="deltarune"] .archive-card,
+[data-theme="deltarune"] .add-form,
+[data-theme="deltarune"] .empty-state,
+[data-theme="deltarune"] .stat-badge,
+[data-theme="deltarune"] .status-banner,
+[data-theme="deltarune"] .assembly-list,
+[data-theme="deltarune"] .seatbar {
+  background: #212123 !important;
+  border: 3px solid #EAEAEA !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+[data-theme="deltarune"] .masthead h1 {
+  font-size: 24px;
+  color: #EAEAEA !important;
+}
+
+[data-theme="deltarune"] .panel-head h2 {
+  background: #212123 !important;
+  color: #EAEAEA !important;
+  border: 2px solid #EAEAEA;
+  font-size: 15px;
+}
+
+[data-theme="deltarune"] .subtitle,
+[data-theme="deltarune"] .session-note,
+[data-theme="deltarune"] .sort-label,
+[data-theme="deltarune"] .import-help,
+[data-theme="deltarune"] label,
+[data-theme="deltarune"] .stat-target,
+[data-theme="deltarune"] .archive-card .astats {
+  color: #EAEAEA !important;
+  font-size: 14px;
+}
+
+[data-theme="deltarune"] input[type=text],
+[data-theme="deltarune"] input[type=number],
+[data-theme="deltarune"] select,
+[data-theme="deltarune"] .group-name-input,
+[data-theme="deltarune"] .preset-select,
+[data-theme="deltarune"] .search-input {
+  background: #212123 !important;
+  color: #EAEAEA !important;
+  border: 2px solid #EAEAEA !important;
+  font-size: 14px !important;
+}
+
+[data-theme="deltarune"] .btn,
+[data-theme="deltarune"] .btn-small,
+[data-theme="deltarune"] .theme-toggle-btn {
+  background: #212123 !important;
+  color: #EAEAEA !important;
+  border: 2px solid #EAEAEA !important;
+  font-size: 14px !important;
+  padding: 4px 10px !important;
+}
+
+[data-theme="deltarune"] .party-name {
+  font-size: 15px !important;
+  color: #EAEAEA !important;
+}
+
+[data-theme="deltarune"] .party-meta {
+  font-size: 13px !important;
+  color: #EAEAEA !important;
+}
+
+[data-theme="deltarune"] .stat-value {
+  font-size: 24px !important;
+  color: #EAEAEA !important;
+}
+
+[data-theme="deltarune"] .status-banner {
+  font-size: 15px !important;
+}
+
+[data-theme="deltarune"] .ungrouped-counter,
+[data-theme="deltarune"] .import-summary {
+  font-size: 15px !important;
+  color: #EAEAEA !important;
+}
+
+[data-theme="deltarune"] .assembly-list li {
+  background: #212123 !important;
+  border: 1px solid #EAEAEA !important;
+  color: #EAEAEA !important;
+  font-size: 14px !important;
+}
+
+[data-theme="deltarune"] .assembly-list .name,
+[data-theme="deltarune"] .assembly-list .ctry,
+[data-theme="deltarune"] .assembly-list .seats {
+  color: #EAEAEA !important;
+  font-size: 14px !important;
+}
+
+[data-theme="deltarune"] .chip {
+  background: #212123 !important;
+  color: #EAEAEA !important;
+  border: 1px solid #EAEAEA !important;
+  font-size: 12px !important;
+}
+
+/* EU Stars Color Override */
+[data-theme="deltarune"] #eu-star polygon {
+  fill: #EAEAEA !important;
+}
+
+/* Deltarune Aqua Hover-Over */
+[data-theme="deltarune"] .btn:hover,
+[data-theme="deltarune"] .theme-toggle-btn:hover,
+[data-theme="deltarune"] .preset-select:hover,
+[data-theme="deltarune"] .sort-select:hover,
+[data-theme="deltarune"] .assembly-list .rm:hover,
+[data-theme="deltarune"] .del:hover,
+[data-theme="deltarune"] .party-card:hover {
+  color: #00FFFF !important;
+  border-color: #00FFFF !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+
+[data-theme="deltarune"] .btn.active {
+  color: #00FFFF !important;
+  border-color: #00FFFF !important;
+}
+
+[data-theme="deltarune"] input:focus,
+[data-theme="deltarune"] select:focus {
+  outline: 2px solid #00FFFF !important;
+  border-color: #00FFFF !important;
 }
 
   *{box-sizing:border-box;}
@@ -273,7 +459,7 @@ h1{
   /* ---------- import ---------- */
   .import-help{font-family:var(--font-mono);font-size:11px;color:var(--ink-soft);margin:0 0 12px;line-height:1.6;}
   .import-help code{background:var(--panel-alt);padding:1px 5px;border-radius:3px;color:var(--ink);}
-  .import-summary{font-family:var(--font-mono);font-size:11.5px;margin:0 0 12px;}
+  .import-summary{font-family:var(--font-response);font-size:17.25px;margin:0 0 12px;}
   .import-summary:empty{display:none;}
   .import-summary.ok{color:var(--green);}
   .import-summary.warn{color:var(--rust);}
@@ -322,7 +508,7 @@ select:focus{
   .colour-row input{flex:1;}
   .colour-dot{width:22px;height:22px;border-radius:50%;border:1px solid var(--line);flex-shrink:0;background:var(--panel);}
   .form-actions{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;margin-top:2px;}
-  .form-error{font-family:var(--font-mono);font-size:11.5px;color:var(--rust);min-height:14px;}
+  .form-error{font-family:var(--font-response);font-size:17.25px;color:var(--rust);min-height:14px;}
 
   /* ---------- empty state ---------- */
   .empty-state{
@@ -651,8 +837,8 @@ select:focus{
   }
 
   .status-banner{
-    font-family:Tahoma,"MS Sans Serif",sans-serif;
-    font-size:11px;
+    font-family:var(--font-response);
+    font-size:16.5px;
     padding:4px 6px;
     border-radius:0;
     background:var(--panel);
@@ -976,6 +1162,11 @@ select:focus{
   function setTheme(theme) {
     if (theme === "dark") {
       document.documentElement.setAttribute("data-theme", "dark");
+      themeIcon.textContent = "⚔️";
+      themeLabel.textContent = "Darkner";
+      themeLabel.textContent = "Darkner";
+    } else if (theme === "deltarune") {
+      document.documentElement.setAttribute("data-theme", "deltarune");
       themeIcon.textContent = "☀️";
       themeLabel.textContent = "Light";
     } else {
@@ -986,8 +1177,14 @@ select:focus{
   }
 
   themeToggleBtn.addEventListener("click", function() {
-    var isDark = document.documentElement.getAttribute("data-theme") === "dark";
-    setTheme(isDark ? "light" : "dark");
+    var currentTheme = document.documentElement.getAttribute("data-theme");
+    if (!currentTheme) {
+      setTheme("dark");
+    } else if (currentTheme === "dark") {
+      setTheme("deltarune");
+    } else {
+      setTheme("light");
+    }
   });
 
   /* ---------------- state ---------------- */
@@ -1887,19 +2084,20 @@ select:focus{
       ctx.scale(scale, scale);
 
       var isDark = document.documentElement.getAttribute("data-theme") === "dark";
+      var isDeltarune = document.documentElement.getAttribute("data-theme") === "deltarune";
 
       // Colors setup
-      var panelBg = isDark ? "#16202b" : "#C0C0C0";
-      var textMain = isDark ? "#FFFFFF" : "#000000";
-      var inputBg = isDark ? "#10171e" : "#FFFFFF";
-      var borderLight = isDark ? "#404040" : "#FFFFFF";
-      var borderDark = isDark ? "#000000" : "#404040";
+      var panelBg = isDeltarune ? "#212123" : (isDark ? "#16202b" : "#C0C0C0");
+      var textMain = isDeltarune ? "#EAEAEA" : (isDark ? "#FFFFFF" : "#000000");
+      var inputBg = isDeltarune ? "#212123" : (isDark ? "#10171e" : "#FFFFFF");
+      var borderLight = isDeltarune ? "#EAEAEA" : (isDark ? "#404040" : "#FFFFFF");
+      var borderDark = isDeltarune ? "#EAEAEA" : (isDark ? "#000000" : "#404040");
 
       // Window Background
       ctx.fillStyle = panelBg;
       ctx.fillRect(0, 0, width, height);
 
-      // Window Outer Bevel (Outset 3D border)
+      // Window Outer Bevel (Outset 3D border or solid border)
       ctx.fillStyle = borderLight;
       ctx.fillRect(0, 0, width, 2);
       ctx.fillRect(0, 0, 2, height);
@@ -1908,11 +2106,11 @@ select:focus{
       ctx.fillRect(0, height - 2, width, 2);
 
       // Window Title Bar
-      ctx.fillStyle = "#000080";
+      ctx.fillStyle = isDeltarune ? "#212123" : "#000080";
       ctx.fillRect(4, 4, width - 8, 22);
 
-      ctx.fillStyle = "#FFFFFF";
-      ctx.font = "bold 11px Tahoma, sans-serif";
+      ctx.fillStyle = "#EAEAEA";
+      ctx.font = isDeltarune ? "11px '8bitoperator JVE Regular', monospace" : "bold 11px Tahoma, sans-serif";
       ctx.textAlign = "left";
       ctx.textBaseline = "middle";
       ctx.fillText("EP Group Builder - " + name, 10, 15);
@@ -1948,16 +2146,16 @@ select:focus{
       ctx.fillRect(10, 82, width - 20, 2);
       ctx.fillRect(width - 12, 32, 2, 52);
 
-      ctx.fillStyle = isDark ? "#80A0FF" : "#000080";
-      ctx.font = "bold 14px Tahoma, sans-serif";
+      ctx.fillStyle = isDeltarune ? "#00FFFF" : (isDark ? "#80A0FF" : "#000080");
+      ctx.font = isDeltarune ? "14px '8bitoperator JVE Regular', monospace" : "bold 14px Tahoma, sans-serif";
       ctx.fillText(name, 18, 52);
 
-      ctx.font = "11px Tahoma, sans-serif";
+      ctx.font = isDeltarune ? "11px '8bitoperator JVE Regular', monospace" : "11px Tahoma, sans-serif";
       ctx.fillStyle = textMain;
       ctx.fillText(stats.totalSeats + " MEPs   |   " + stats.countryCount + " member states   |   " + members.length + " parties", 18, 70);
 
       // Threshold Badge
-      ctx.font = "bold 10px Tahoma, sans-serif";
+      ctx.font = isDeltarune ? "10px '8bitoperator JVE Regular', monospace" : "bold 10px Tahoma, sans-serif";
       if(stats.meets){
         ctx.fillStyle = isDark ? "#00FF00" : "#008000";
         ctx.fillText("[\u2713 MEETS THRESHOLD]", width - 170, 52);
@@ -1987,7 +2185,7 @@ select:focus{
       var markerX = barX + 1 + (layout.markerPct / 100) * innerW;
       ctx.fillStyle = isDark ? "#FF6B6B" : "#800000";
       ctx.fillRect(markerX - 1, barY - 2, 2, barH + 4);
-      ctx.font = "bold 9px Tahoma, sans-serif";
+      ctx.font = isDeltarune ? "9px '8bitoperator JVE Regular', monospace" : "bold 9px Tahoma, sans-serif";
       ctx.textAlign = "center";
       ctx.fillText("23", markerX, barY - 4);
       ctx.textAlign = "left";
@@ -2027,16 +2225,16 @@ select:focus{
         }
 
         ctx.fillStyle = textMain;
-        ctx.font = "bold 11px Tahoma, sans-serif";
+        ctx.font = isDeltarune ? "11px '8bitoperator JVE Regular', monospace" : "bold 11px Tahoma, sans-serif";
         ctx.textAlign = "left";
         ctx.fillText(m.name, 56, y + 17);
 
-        ctx.font = "10px Tahoma, sans-serif";
-        ctx.fillStyle = isDark ? "#A0A0A0" : "#404040";
+        ctx.font = isDeltarune ? "10px '8bitoperator JVE Regular', monospace" : "10px Tahoma, sans-serif";
+        ctx.fillStyle = isDeltarune ? "#EAEAEA" : (isDark ? "#A0A0A0" : "#404040");
         ctx.fillText(m.country, width - 120, y + 17);
 
         ctx.textAlign = "right";
-        ctx.font = "bold 11px 'Courier New', monospace";
+        ctx.font = isDeltarune ? "11px '8bitoperator JVE Regular', monospace" : "bold 11px 'Courier New', monospace";
         ctx.fillStyle = textMain;
         ctx.fillText(m.seats + " seats", width - 20, y + 17);
         ctx.textAlign = "left";
@@ -2056,7 +2254,7 @@ select:focus{
       ctx.fillRect(width - 11, footerY, 1, 16);
 
       ctx.fillStyle = textMain;
-      ctx.font = "10px 'VCR OSD Mono', monospace";
+      ctx.font = isDeltarune ? "10px '8bitoperator JVE Regular', monospace" : "10px 'VCR OSD Mono', monospace";
       ctx.fillText("bananasareviolet.github.io/epgroupbuilder", 14, footerY + 12);
 
       canvas.toBlob(function(blob){
