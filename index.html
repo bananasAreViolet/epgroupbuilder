@@ -771,7 +771,28 @@ select:focus{
   .astamp.warn{background:var(--rust-soft);color:var(--rust);}
   .dot-row{display:flex;flex-wrap:wrap;gap:2px;margin-bottom:8px;}
   .dot-row span{width:10px;height:10px;border-radius:0;border:1px solid var(--border-dark);display:inline-block;}
-  .archive-actions{display:flex;gap:6px;}
+  .archive-actions{display:flex;gap:4px;flex-wrap:wrap;}
+
+  /* ---------- parliament diagram modal ---------- */
+  .parliament-modal {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .parliament-modal-content {
+    background: var(--panel);
+    border-top: 2px solid var(--border-light);
+    border-left: 2px solid var(--border-light);
+    border-right: 2px solid var(--border-dark);
+    border-bottom: 2px solid var(--border-dark);
+    width: 680px;
+    max-width: 95vw;
+    padding: 8px;
+  }
 
   @media (prefers-reduced-motion:reduce){ *{transition:none !important;} }
 </style>
@@ -929,6 +950,16 @@ select:focus{
 
       <input type="text" id="groupNameInput" class="group-name-input" placeholder="Name this group" maxlength="60" />
 
+      <div class="field-grid" style="margin-bottom:12px;">
+        <div class="full">
+          <label for="groupColourInput">Group colour (optional)</label>
+          <div class="colour-row">
+            <input type="text" id="groupColourInput" placeholder="#3A6B62, auto-assigned if blank" maxlength="7" />
+            <span class="colour-dot" id="groupColourDot"></span>
+          </div>
+        </div>
+      </div>
+
       <div class="seatbar-wrap">
         <div class="seatbar" id="seatBar" role="img" aria-label="Seat composition of this group"></div>
         <div class="seatbar-marker" id="seatBarMarker"><span>23</span></div>
@@ -959,10 +990,34 @@ select:focus{
   </main>
 
   <section class="archive" id="archiveSection" hidden>
-    <div class="panel-head"><h2>Saved groups</h2></div>
+    <div class="panel-head">
+      <h2>Saved groups</h2>
+      <div class="panel-head-actions">
+        <button id="generateParliamentBtn" class="btn btn-primary btn-small" type="button">Generate Parliament Diagram</button>
+      </div>
+    </div>
     <div class="archive-grid" id="archiveGrid"></div>
   </section>
 
+</div>
+
+<!-- PARLIAMENT DIAGRAM MODAL -->
+<div id="parliamentModal" class="parliament-modal" style="display:none;">
+  <div class="parliament-modal-content">
+    <div class="masthead" style="margin-bottom:8px;">
+      <div class="masthead-content">
+        <h1 style="font-size:16px;">Parliament Diagram</h1>
+        <p class="subtitle" style="font-size:10px;">Seat distribution across all saved groups</p>
+      </div>
+      <button type="button" id="closeParliamentModal" class="btn btn-small" style="padding:2px 8px; font-weight:bold;">&times;</button>
+    </div>
+    <div id="parliamentWarning" class="status-banner warn" style="display:none; margin-bottom:8px; white-space:pre-line;"></div>
+    <div id="parliamentContainer" style="text-align:center; background:var(--input-bg); border-top:2px solid var(--border-dark); border-left:2px solid var(--border-dark); border-right:2px solid var(--border-light); border-bottom:2px solid var(--border-light); padding:12px; min-height:280px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+    </div>
+    <div style="margin-top:12px; display:flex; justify-content:flex-end;">
+      <button type="button" id="closeParliamentModalBtn" class="btn btn-small">Close</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -1007,7 +1062,7 @@ select:focus{
   var THRESHOLD_COUNTRIES = 7;
 
   var parties = [];       // {id,name,country,seats,logo,color,acronym,epGroup}
-  var savedGroups = [];   // {id,name,members:[snapshot],stats,timestamp}
+  var savedGroups = [];   // {id,name,color,members:[snapshot],stats,timestamp}
   var idCounter = 1;
   var colorIndex = 0;
   var pendingLogo = null; // dataURL captured from file input before submit
@@ -1038,6 +1093,7 @@ select:focus{
   var clearRosterBtn = $("clearRosterBtn");
   var presetSelect = $("presetSelect");
   var groupNameInput = $("groupNameInput");
+  var groupColourInput = $("groupColourInput"), groupColourDot = $("groupColourDot");
   var seatBar = $("seatBar"), seatBarMarker = $("seatBarMarker");
   var seatStat = $("seatStat"), seatValue = $("seatValue");
   var countryStat = $("countryStat"), countryValue = $("countryValue");
@@ -1045,6 +1101,12 @@ select:focus{
   var assemblyEmpty = $("assemblyEmpty"), assemblyList = $("assemblyList");
   var exportGroupBtn = $("exportGroupBtn"), saveGroupBtn = $("saveGroupBtn");
   var archiveSection = $("archiveSection"), archiveGrid = $("archiveGrid");
+  var generateParliamentBtn = $("generateParliamentBtn");
+  var parliamentModal = $("parliamentModal");
+  var closeParliamentModal = $("closeParliamentModal");
+  var closeParliamentModalBtn = $("closeParliamentModalBtn");
+  var parliamentWarning = $("parliamentWarning");
+  var parliamentContainer = $("parliamentContainer");
 
   /* populate country select */
   COUNTRIES.slice().sort().forEach(function(c){
@@ -1207,6 +1269,11 @@ select:focus{
     colourDot.style.background = hex || "var(--panel-alt)";
   });
 
+  groupColourInput.addEventListener("input", function(){
+    var hex = parseHexColor(groupColourInput.value);
+    groupColourDot.style.background = hex || "var(--panel-alt)";
+  });
+
   function resetAddForm(){
     nameInput.value = ""; if(acronymInput) acronymInput.value = ""; countryInput.selectedIndex = 0; seatsInput.value = ""; colourInput.value = "";
     logoInput.value = ""; pendingLogo = null;
@@ -1284,7 +1351,6 @@ select:focus{
     var nameKey = findKey(keys, ["NAME", "PARTYNAME", "PARTY"]);
     var acronymKey = findKey(keys, ["ACRONYM", "ABBREVIATION", "SHORTNAME"]);
     
-    // Resolve seats column based on mode
     var seatKey;
     if (mode === "europe_elects") {
       seatKey = findKey(keys, ["EESEAT", "EESEATS", "EE_SEAT", "EE_SEATS", "PROJECTION", "PROJECTIONSEATS"]);
@@ -1372,7 +1438,6 @@ select:focus{
         var data = new Uint8Array(buffer);
         var wb = XLSX.read(data, { type: "array" });
         
-        // Find sheet matching mode, or default to first sheet
         var targetSheetName = wb.SheetNames[0];
         if (mode === "europe_elects") {
           var eeSheet = wb.SheetNames.find(function(s){
@@ -1389,7 +1454,6 @@ select:focus{
         var sheet = wb.Sheets[targetSheetName];
         var rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
         
-        // Wipe current active roster before loading database
         parties = [];
         workspace.memberIds = [];
 
@@ -1767,9 +1831,11 @@ select:focus{
     if(members.length === 0) return;
     var stats = computeStats(members);
     var name = groupNameInput.value.trim() || "Untitled Group";
+    var groupColor = parseHexColor(groupColourInput.value) || nextPaletteColor();
     savedGroups.push({
       id: genId(),
       name: name,
+      color: groupColor,
       members: members.map(function(m){
         return { sourceId: m.id, name: m.name, acronym: m.acronym, country: m.country, seats: m.seats, logo: m.logo, color: m.color, epGroup: m.epGroup };
       }),
@@ -1778,13 +1844,174 @@ select:focus{
     });
     workspace.memberIds = [];
     groupNameInput.value = "";
+    groupColourInput.value = "";
+    groupColourDot.style.background = "var(--panel-alt)";
     renderRoster(); renderAssembly(); renderArchive();
   });
+
+  /* ---------------- overlap check & parliament diagram ---------------- */
+  function checkPartyOverlaps() {
+    var partyMap = {};
+    savedGroups.forEach(function(g){
+      g.members.forEach(function(m){
+        if(!partyMap[m.sourceId]) {
+          partyMap[m.sourceId] = { name: m.name, groups: [] };
+        }
+        if(partyMap[m.sourceId].groups.indexOf(g.name) === -1) {
+          partyMap[m.sourceId].groups.push(g.name);
+        }
+      });
+    });
+
+    var overlaps = [];
+    Object.keys(partyMap).forEach(function(sourceId){
+      var info = partyMap[sourceId];
+      if(info.groups.length > 1) {
+        overlaps.push({ partyName: info.name, groups: info.groups });
+      }
+    });
+    return overlaps;
+  }
+
+  generateParliamentBtn.addEventListener("click", function(){
+    if(savedGroups.length === 0){
+      alert("No saved groups available to generate a Parliament Diagram.");
+      return;
+    }
+
+    var overlaps = checkPartyOverlaps();
+    if(overlaps.length > 0) {
+      var overlapTexts = overlaps.map(function(o){
+        return "• Party “" + o.partyName + "” overlaps in groups: " + o.groups.join(", ");
+      });
+      parliamentWarning.style.display = "block";
+      parliamentWarning.textContent = "⚠️ Warning: The following parties overlap across multiple saved groups:\n" + overlapTexts.join("\n");
+    } else {
+      parliamentWarning.style.display = "none";
+      parliamentWarning.textContent = "";
+    }
+
+    renderParliamentSvg();
+    parliamentModal.style.display = "flex";
+  });
+
+  function closeParliamentModalHandler() {
+    parliamentModal.style.display = "none";
+  }
+  closeParliamentModal.addEventListener("click", closeParliamentModalHandler);
+  closeParliamentModalBtn.addEventListener("click", closeParliamentModalHandler);
+  parliamentModal.addEventListener("click", function(e){
+    if(e.target === parliamentModal) closeParliamentModalHandler();
+  });
+
+  function renderParliamentSvg() {
+    var seatItems = [];
+    savedGroups.forEach(function(g){
+      g.members.forEach(function(m){
+        for(var i = 0; i < m.seats; i++){
+          seatItems.push({ groupName: g.name, color: g.color });
+        }
+      });
+    });
+
+    var totalSeats = seatItems.length;
+    if(totalSeats === 0){
+      parliamentContainer.innerHTML = "<p>No seats to display.</p>";
+      return;
+    }
+
+    var rows = Math.min(35, Math.max(3, Math.ceil(Math.sqrt(totalSeats * 0.8))));
+    var rMin = 65, rowSpacing = 13;
+    var rMax = rMin + (rows - 1) * rowSpacing;
+    var radii = [];
+    var circumferenceSum = 0;
+    for(var r = 0; r < rows; r++) {
+      var rad = rMin + (r / (rows - 1 || 1)) * (rMax - rMin);
+      radii.push(rad);
+      circumferenceSum += rad;
+    }
+
+    var rowSeats = [];
+    var remaining = totalSeats;
+    for(var r = 0; r < rows; r++) {
+      if(r === rows - 1) {
+        rowSeats.push(remaining);
+      } else {
+        var count = Math.round(totalSeats * (radii[r] / circumferenceSum));
+        count = Math.min(remaining, Math.max(1, count));
+        rowSeats.push(count);
+        remaining -= count;
+      }
+    }
+    // Note: the last row already absorbs the exact remainder above, so
+    // rowSeats always sums to totalSeats and no further correction is needed.
+
+    var svgWidth = rMax * 2 + 80, svgHeight = rMax + 90;
+    var cx = svgWidth / 2, cy = svgHeight - 40;
+
+    // Generate all seat coordinate slots
+    var seatSlots = [];
+    for(var r = 0; r < rows; r++) {
+      var rad = radii[r];
+      var count = rowSeats[r];
+      if(count <= 0) continue;
+      for(var i = 0; i < count; i++) {
+        var angle = Math.PI - (i / (count - 1 || 1)) * Math.PI;
+        var x = cx + rad * Math.cos(angle);
+        var y = cy - rad * Math.sin(angle);
+        seatSlots.push({ x: x, y: y });
+      }
+    }
+
+    // Sort seat slots strictly from left to right (x ascending)
+    seatSlots.sort(function(a, b){
+      return a.x - b.x;
+    });
+
+    var svgParts = ['<svg width="' + svgWidth + '" height="' + svgHeight + '" viewBox="0 0 ' + svgWidth + ' ' + svgHeight + '" style="max-width:100%; height:auto; display:block; margin:0 auto;" xmlns="http://www.w3.org/2000/svg">'];
+    svgParts.push('<rect width="100%" height="100%" fill="transparent"/>');
+
+    for(var i = 0; i < seatSlots.length; i++) {
+      if(i >= seatItems.length) break;
+      var slot = seatSlots[i];
+      var seatColor = seatItems[i].color;
+      var groupName = seatItems[i].groupName;
+
+      svgParts.push('<circle cx="' + slot.x.toFixed(1) + '" cy="' + slot.y.toFixed(1) + '" r="4.5" fill="' + seatColor + '" stroke="#404040" stroke-width="0.75"><title>' + groupName + '</title></circle>');
+    }
+
+    // Total seats number in the center
+    svgParts.push('<text x="' + cx + '" y="' + (cy - 32) + '" text-anchor="middle" font-family="Tahoma, sans-serif" font-size="26" font-weight="bold" fill="var(--ink)">' + totalSeats + '</text>');
+    svgParts.push('<text x="' + cx + '" y="' + (cy - 16) + '" text-anchor="middle" font-family="Tahoma, sans-serif" font-size="9" fill="var(--ink-soft)" letter-spacing="1">TOTAL SEATS</text>');
+
+    svgParts.push('</svg>');
+
+    var legendHtml = '<div style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:12px; font-size:11px;">';
+    savedGroups.forEach(function(g){
+      var groupSeats = g.stats.totalSeats;
+      legendHtml += '<div style="display:flex; align-items:center; gap:5px;">' +
+        '<span style="width:12px; height:12px; background:' + g.color + '; display:inline-block; border:1px solid var(--border-dark);"></span>' +
+        '<span><b>' + g.name + '</b> (' + groupSeats + ' MEPs)</span>' +
+        '</div>';
+    });
+    legendHtml += '</div>';
+
+    parliamentContainer.innerHTML = svgParts.join("") + legendHtml;
+  }
+
+  function moveGroup(index, direction) {
+    var newIndex = index + direction;
+    if(newIndex < 0 || newIndex >= savedGroups.length) return;
+    var temp = savedGroups[index];
+    savedGroups[index] = savedGroups[newIndex];
+    savedGroups[newIndex] = temp;
+    renderArchive();
+  }
 
   function renderArchive(){
     archiveSection.hidden = savedGroups.length === 0;
     archiveGrid.innerHTML = "";
-    savedGroups.slice().reverse().forEach(function(g){
+    savedGroups.forEach(function(g, index){
       var card = document.createElement("div");
       card.className = "archive-card";
 
@@ -1814,6 +2041,20 @@ select:focus{
       var actions = document.createElement("div");
       actions.className = "archive-actions";
 
+      var moveLeftBtn = document.createElement("button");
+      moveLeftBtn.className = "btn btn-ghost btn-small";
+      moveLeftBtn.textContent = "\u2190";
+      moveLeftBtn.title = "Move group left";
+      moveLeftBtn.disabled = index === 0;
+      moveLeftBtn.addEventListener("click", function(){ moveGroup(index, -1); });
+
+      var moveRightBtn = document.createElement("button");
+      moveRightBtn.className = "btn btn-ghost btn-small";
+      moveRightBtn.textContent = "\u2192";
+      moveRightBtn.title = "Move group right";
+      moveRightBtn.disabled = index === savedGroups.length - 1;
+      moveRightBtn.addEventListener("click", function(){ moveGroup(index, 1); });
+
       var restoreBtn = document.createElement("button");
       restoreBtn.className = "btn btn-primary btn-small"; restoreBtn.textContent = "Restore";
       restoreBtn.title = "Restore this group composition to the builder";
@@ -1835,6 +2076,10 @@ select:focus{
         });
         workspace.memberIds = g.members.map(function(m){ return m.sourceId; });
         groupNameInput.value = g.name;
+        if(g.color) {
+          groupColourInput.value = g.color;
+          groupColourDot.style.background = g.color;
+        }
         renderRoster();
         renderAssembly();
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1852,6 +2097,8 @@ select:focus{
         renderArchive(); renderRoster();
       });
 
+      actions.appendChild(moveLeftBtn);
+      actions.appendChild(moveRightBtn);
       actions.appendChild(restoreBtn);
       actions.appendChild(expBtn);
       actions.appendChild(delBtn);
@@ -1889,18 +2136,15 @@ select:focus{
 
       var isDark = document.documentElement.getAttribute("data-theme") === "dark";
 
-      // Colors setup
       var panelBg = isDark ? "#16202b" : "#C0C0C0";
       var textMain = isDark ? "#FFFFFF" : "#000000";
       var inputBg = isDark ? "#10171e" : "#FFFFFF";
       var borderLight = isDark ? "#404040" : "#FFFFFF";
       var borderDark = isDark ? "#000000" : "#404040";
 
-      // Window Background
       ctx.fillStyle = panelBg;
       ctx.fillRect(0, 0, width, height);
 
-      // Window Outer Bevel (Outset 3D border)
       ctx.fillStyle = borderLight;
       ctx.fillRect(0, 0, width, 2);
       ctx.fillRect(0, 0, 2, height);
@@ -1908,7 +2152,6 @@ select:focus{
       ctx.fillRect(width - 2, 0, 2, height);
       ctx.fillRect(0, height - 2, width, 2);
 
-      // Window Title Bar
       ctx.fillStyle = "#000080";
       ctx.fillRect(4, 4, width - 8, 22);
 
@@ -1918,7 +2161,6 @@ select:focus{
       ctx.textBaseline = "middle";
       ctx.fillText("EP Group Builder - " + name, 10, 15);
 
-      // Title bar buttons (_, [], X)
       var btnX = width - 60;
       ["_", "\u25A1", "\u2715"].forEach(function(sym, idx){
         var bx = btnX + idx * 17;
@@ -1936,7 +2178,6 @@ select:focus{
         ctx.fillText(sym, bx + 7, 13);
       });
 
-      // Group Header Info Inset Box
       ctx.textAlign = "left";
       ctx.textBaseline = "alphabetic";
 
@@ -1957,7 +2198,6 @@ select:focus{
       ctx.fillStyle = textMain;
       ctx.fillText(stats.totalSeats + " MEPs   |   " + stats.countryCount + " member states   |   " + members.length + " parties", 18, 70);
 
-      // Threshold Badge
       ctx.font = "bold 10px Tahoma, sans-serif";
       if(stats.meets){
         ctx.fillStyle = isDark ? "#00FF00" : "#008000";
@@ -1967,7 +2207,6 @@ select:focus{
         ctx.fillText("[! BELOW THRESHOLD]", width - 170, 52);
       }
 
-      // Seat composition bar
       var barX = 10, barY = 92, barW = width - 20, barH = 18;
       ctx.fillStyle = borderDark;
       ctx.fillRect(barX, barY, barW, barH);
@@ -1993,7 +2232,6 @@ select:focus{
       ctx.fillText("23", markerX, barY - 4);
       ctx.textAlign = "left";
 
-      // Members Inset Panel
       var listY = 120;
       var listH = members.length * rowH + 6;
       ctx.fillStyle = inputBg;
@@ -2019,7 +2257,6 @@ select:focus{
         ctx.fillRect(width - 15, y, 1, rowH - 4);
         ctx.fillRect(14, y + rowH - 5, width - 28, 1);
 
-        // Party Color Indicator
         ctx.fillStyle = m.color;
         ctx.fillRect(18, y + 4, 4, logoSize);
 
@@ -2045,7 +2282,6 @@ select:focus{
         y += rowH;
       });
 
-      // Status Bar
       var footerY = height - 22;
       ctx.fillStyle = panelBg;
       ctx.fillRect(10, footerY, width - 20, 16);
