@@ -844,8 +844,8 @@ select:focus{
       <div class="panel-head">
         <h2>Party Roster</h2>
         <div class="panel-head-actions">
-          <button id="loadCurrentEpBtn" class="btn btn-ghost btn-small" type="button" title="Load current EP seating arrangement from repository database">Current EP Seating</button>
-          <button id="loadEuropeElectsBtn" class="btn btn-ghost btn-small" type="button" title="Load latest Europe Elects projection from repository database">Europe Elects Projection</button>
+          <button id="loadCurrentEpBtn" class="btn btn-ghost btn-small" type="button" title="Load current EP seats">Current EP seats</button>
+          <button id="loadEuropeElectsBtn" class="btn btn-ghost btn-small" type="button" title="Load latest Europe Elects projection ">Europe Elects projection</button>
           <select id="presetSelect" class="preset-select" aria-label="Load Group Preset">
             <option value="" disabled selected>Load Group Preset...</option>
             <option value="EPP">EPP</option>
@@ -993,7 +993,7 @@ select:focus{
     <div class="panel-head">
       <h2>Saved groups</h2>
       <div class="panel-head-actions">
-        <button id="generateParliamentBtn" class="btn btn-primary btn-small" type="button">Generate Parliament Diagram</button>
+        <button id="generateParliamentBtn" class="btn btn-primary btn-small" type="button">Generate a parliament diagram</button>
       </div>
     </div>
     <div class="archive-grid" id="archiveGrid"></div>
@@ -1006,7 +1006,7 @@ select:focus{
   <div class="parliament-modal-content">
     <div class="masthead" style="margin-bottom:8px;">
       <div class="masthead-content">
-        <h1 style="font-size:16px;">Parliament Diagram</h1>
+        <h1 style="font-size:16px;">Parliament diagram</h1>
         <p class="subtitle" style="font-size:10px;">Seat distribution across all saved groups</p>
       </div>
       <button type="button" id="closeParliamentModal" class="btn btn-small" style="padding:2px 8px; font-weight:bold;">&times;</button>
@@ -1330,7 +1330,7 @@ select:focus{
         var rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
         processImportRows(rows);
       } catch(err){
-        importSummary.textContent = "Couldn't read that file. Make sure it's a valid spreadsheet.";
+        importSummary.textContent = "Couldn't read that file. Make sure it's a working and valid spreadsheet.";
         importSummary.className = "import-summary warn";
       }
     };
@@ -1460,8 +1460,8 @@ select:focus{
         return processImportRows(rows, mode);
       })
       .then(function(){
-        var modeLabel = (mode === "europe_elects") ? "Latest Europe Elects Projection" : "Current EP Seating Arrangement";
-        importSummary.textContent = "Loaded " + modeLabel + " from repository database.";
+        var modeLabel = (mode === "europe_elects") ? "latest Europe Elects projection" : "current EP seats";
+        importSummary.textContent = "Loaded " + modeLabel + " from the database.";
         importSummary.className = "import-summary ok";
       })
       .catch(function(err){
@@ -1875,7 +1875,7 @@ select:focus{
 
   generateParliamentBtn.addEventListener("click", function(){
     if(savedGroups.length === 0){
-      alert("No saved groups available to generate a Parliament Diagram.");
+      alert("No saved groups available to generate a diagram.");
       return;
     }
 
